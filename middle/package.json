@@ -4,7 +4,7 @@
   "description": "le serveur du middle",
   "main": "server/server.js",
   "scripts": {
-    "build": "babel server/ -d dist && rm -rf dist/app && cp -r app/ dist/",
+    "build": "babel server/ -d dist && rm -rf dist/app && cp -r ../front/dist/ dist/app/",
     "start": "npm run build && node dist/server.js",
     "inspect": "node --inspect dist/server.js",
     "test": "tests"
