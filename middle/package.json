@@ -1,0 +1,22 @@
+{
+  "name": "middle",
+  "version": "1.0.0",
+  "description": "le serveur du middle",
+  "main": "server/server.js",
+  "scripts": {
+    "build": "babel server/ -d dist && rm -rf dist/app && cp -r app/ dist/",
+    "start": "npm run build && node dist/server.js",
+    "inspect": "node --inspect dist/server.js",
+    "test": "tests"
+  },
+  "author": "GAU, SEVERAC",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.16",
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16"
+  }
+}
