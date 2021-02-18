@@ -9,7 +9,7 @@ import { User } from '../models/user.model';
   styleUrls: ['./date-seeker.component.scss']
 })
 export class DateSeekerComponent implements OnInit {
-  usersInTown!: User[];
+  usersInCity!: User[];
   searchQuery = '';
 
 
@@ -19,10 +19,10 @@ export class DateSeekerComponent implements OnInit {
   }
 
   public onSubmit(form: NgForm): void {
-    const town = form.value.town;
-    this.searchQuery = town;
-    this.httpService.getUsersForTown(town).subscribe(
-      (users: User[]) => { this.usersInTown = users; },
+    const city = form.value.town;
+    this.searchQuery = city;
+    this.httpService.getUsersForTown(city).subscribe(
+      (users: User[]) => { this.usersInCity = users; },
       (error: any) => { console.log(error); }
     );
   }

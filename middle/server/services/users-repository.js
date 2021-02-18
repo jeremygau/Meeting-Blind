@@ -11,7 +11,9 @@ const handleElasticsearchError = (error) => {
 
 const getAll = () => esClient.search({index,})
     .then(response => response)
-    .catch((error) => {handleElasticsearchError(error);});
+    .catch((error) => {
+        handleElasticsearchError(error);
+    });
 
 const store = user => esClient.index({
     index,
@@ -28,7 +30,49 @@ const getUser =
             body: {"query": {"match": {"email": {"query": email}}}},
         })
         .then(response => response)
-        .catch((error) => {handleElasticsearchError(error);});
+        .catch((error) => {
+            handleElasticsearchError(error);
+        });
+
+const getUsersForCity = (city, desiredGender, requesterGender) => esClient.search({
+    index,
+    body: {
+        "query": {
+            "bool": {
+                "must": [
+                    {"match": {
+                            "city": {"query": city}
+                        }
+                    },
+                    {"match": {
+                            "gender": {"query": desiredGender}
+                        }
+                    },
+                    {"bool": {
+                            "should": [
+                                {"match": {
+                                        "search": {
+                                            "query": requesterGender
+                                        }
+                                    }
+                                },
+                                {"match": {
+                                        "search": {
+                                            "query": "allGenders" // TODO Corriger quand on saura comment c'est traduit
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}).then(response => response)
+    .catch((error) => {
+        handleElasticsearchError(error);
+    });
 
 
-export default {getUser, store, getAll};
+export default {getUser, store, getAll, getUsersForCity};
