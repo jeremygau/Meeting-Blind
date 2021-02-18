@@ -1,1 +1,44 @@
-<p>new-user works!</p>
+<div>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email">
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Mot de passe</label>
+      <input type="password" class="form-control" id="password">
+    </div>
+    <div class="mb-3">
+      <label for="firstName" class="form-label">Prénom</label>
+      <input type="text" class="form-control" id="firstName">
+    </div>
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Nom</label>
+      <input type="text" class="form-control" id="lastName">
+    </div>
+    <div class="mb-3">
+      <label for="city" class="form-label">Ville</label>
+      <input type="text" class="form-control" id="city">
+    </div>
+    <div class="mb-3">
+      <label for="gender" class="form-label">Genre</label>
+      <select class="form-select" aria-label="gender" id="gender">
+        <option value="1">Homme</option>
+        <option value="2">Femme</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="search" class="form-label">Je recherche </label>
+      <select class="form-select" aria-label="search" id="search">
+        <option value="1">des hommes</option>
+        <option value="2">des femmes</option>
+        <option value="3">les deux</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">S'inscrire</button>
+  </form>
+</div>
