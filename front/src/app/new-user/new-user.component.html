@@ -2,27 +2,27 @@
   <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
     <div class="mb-3">
       <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email">
+      <input type="email" class="form-control" id="email" required>
     </div>
     <div class="mb-3">
       <label for="password" class="form-label">Mot de passe</label>
-      <input type="password" class="form-control" id="password">
+      <input type="password" class="form-control" id="password" required>
     </div>
     <div class="mb-3">
       <label for="firstName" class="form-label">Prénom</label>
-      <input type="text" class="form-control" id="firstName">
+      <input type="text" class="form-control" id="firstName" required>
     </div>
     <div class="mb-3">
       <label for="lastName" class="form-label">Nom</label>
-      <input type="text" class="form-control" id="lastName">
+      <input type="text" class="form-control" id="lastName" required>
     </div>
     <div class="mb-3">
       <label for="city" class="form-label">Ville</label>
-      <input type="text" class="form-control" id="city">
+      <input type="text" class="form-control" id="city" required>
     </div>
     <div class="mb-3">
       <label for="gender" class="form-label">Genre</label>
-      <select class="form-select" aria-label="gender" id="gender">
+      <select class="form-select" aria-label="gender" id="gender" required>
         <option value="1">Homme</option>
         <option value="2">Femme</option>
       </select>
@@ -33,7 +33,7 @@
     </div>
     <div class="mb-3">
       <label for="search" class="form-label">Je recherche </label>
-      <select class="form-select" aria-label="search" id="search">
+      <select class="form-select" aria-label="search" id="search" required>
         <option value="1">des hommes</option>
         <option value="2">des femmes</option>
         <option value="3">les deux</option>
