@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { HttpService } from './services/http.service';
 import { FormsModule } from '@angular/forms';
 import { UsersComponent } from './users/users.component';
+import { SingleUserComponent } from './single-user/single-user.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     routedComponents,
-    UsersComponent
+    UsersComponent,
+    SingleUserComponent
   ],
   imports: [
     BrowserModule,
