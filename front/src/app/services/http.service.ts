@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { User } from '../models/user.model';
 
 
-@Injectable({providedIn : 'root'})
+@Injectable()
 export class HttpService {
   private serverUrl = 'http://localhost:8080/';
 
@@ -18,5 +19,9 @@ export class HttpService {
 
   public getUsersForTown(town: string): Observable<any> {
     return this.http.get(this.serverUrl + 'users/' + town);
+  }
+
+  public createUser(user: User): Observable<any> {
+    return this.http.post<User>(this.serverUrl + 'users', user, this.httpOptions);
   }
 }
