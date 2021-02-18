@@ -18,7 +18,11 @@ export class HttpService {
   };
 
   public getUsersForTown(town: string): Observable<any> {
-    return this.http.get(this.serverUrl + 'users/' + town);
+    return this.http.get(this.serverUrl + 'search/' + town);
+  }
+
+  public getUser(id: number): Observable<User> {
+    return this.http.get(this.serverUrl + 'users/' + id);
   }
 
   public createUser(user: User): Observable<any> {

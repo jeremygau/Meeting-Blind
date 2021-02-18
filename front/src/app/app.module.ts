@@ -6,11 +6,15 @@ import { AppComponent } from './app.component';
 import { HttpService } from './services/http.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import { UsersComponent } from './users/users.component';
+import { SingleUserComponent } from './single-user/single-user.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    routedComponents
+    routedComponents,
+    UsersComponent,
+    SingleUserComponent
   ],
   imports: [
     BrowserModule,
