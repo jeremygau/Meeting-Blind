@@ -21,7 +21,7 @@ export class HttpService {
     return this.http.get(this.serverUrl + 'search/' + town);
   }
 
-  public getUser(id: number): Observable<User> {
+  public getUser(id: number): Observable<any> {
     return this.http.get(this.serverUrl + 'users/' + id);
   }
 

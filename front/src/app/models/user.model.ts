@@ -9,7 +9,10 @@ export class User {
     public city: string,
     public gender: number,
     public description: string,
-    public search: number
+    public search: number,
+    public phone: number,
+    public likedUsers: number[],
+    public likedBy: number[]
   ) { }
 
 }
