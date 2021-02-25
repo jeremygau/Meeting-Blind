@@ -25,36 +25,55 @@ export class NewUserComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      phone: ['', Validators.required],
       city: ['', Validators.required],
-      search: ['', Validators.required]
+      gender: ['', Validators.required],
+      description: [''],
+      desiredGender: ['', Validators.required]
     });
   }
 
   onSubmitForm(): void {
     const formValue = this.userForm.value;
+    let gender = 'homme';
+    switch (formValue.gender) {
+      case 1:
+        gender = 'homme';
+        break;
+      case 2:
+        gender = 'femme';
+        break;
+    }
+    let desiredGender = 'homme';
+    switch (formValue.desiredGender) {
+      case 1:
+        desiredGender = 'homme';
+        break;
+      case 2:
+        desiredGender = 'femme';
+        break;
+      case 3:
+        desiredGender = 'homme/femme';
+        break;
+    }
     const newUser = new User(
       0,
       formValue.email,
       formValue.password,
       formValue.firstName,
-      formValue.lastName,
       formValue.city,
-      formValue.gender,
+      gender,
       formValue.description,
-      formValue.search,
-      formValue.phone,
+      desiredGender,
       [],
       []
     );
+    console.log(newUser);
     this.httpService.createUser(newUser).subscribe((response) => {
       if (response && response.email === 'ok') {
-        alert('User crée');
+        alert('L\'utilisateur a été crée');
       }
       else {
-        alert('User Existe !');
-        return;
+        alert('L\'utilisateur existe deja !');
       }
     }, (e) => {
       console.log('erreur', e);
@@ -62,5 +81,4 @@ export class NewUserComponent implements OnInit {
       this.router.navigate(['']);
     });
   }
-
 }

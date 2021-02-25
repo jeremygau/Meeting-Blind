@@ -5,12 +5,10 @@ export class User {
     public email: string,
     public password: string,
     public firstName: string,
-    public lastName: string,
     public city: string,
-    public gender: number,
+    public gender: string,
     public description: string,
-    public search: number,
-    public phone: number,
+    public desiredGender: string,
     public likedUsers: number[],
     public likedBy: number[]
   ) { }

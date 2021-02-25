@@ -2,47 +2,41 @@
   <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
     <div class="mb-3">
       <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" required>
+      <input type="email" class="form-control" id="email" formControlName="email">
     </div>
     <div class="mb-3">
       <label for="password" class="form-label">Mot de passe</label>
-      <input type="password" class="form-control" id="password" required>
+      <input type="password" class="form-control" id="password" formControlName="password">
     </div>
     <div class="mb-3">
       <label for="firstName" class="form-label">Prénom</label>
-      <input type="text" class="form-control" id="firstName" required>
-    </div>
-    <div class="mb-3">
-      <label for="lastName" class="form-label">Nom</label>
-      <input type="text" class="form-control" id="lastName" required>
-    </div>
-    <div class="mb-3">
-      <label for="phone" class="form-label">Telephone</label>
-      <input type="text" class="form-control" id="phone" required>
+      <input type="text" class="form-control" id="firstName" formControlName="firstName">
     </div>
     <div class="mb-3">
       <label for="city" class="form-label">Ville</label>
-      <input type="text" class="form-control" id="city" required>
+      <input type="text" class="form-control" id="city" formControlName="city">
     </div>
     <div class="mb-3">
-      <label for="gender" class="form-label">Genre</label>
-      <select class="form-select" aria-label="gender" id="gender" required>
-        <option value="1">Homme</option>
+      <label for="gender" class="form-label">Genre </label>
+      <select class="form-select" aria-label="gender" id="gender" formControlName="gender">
+        <option selected value="1">Homme</option>
         <option value="2">Femme</option>
       </select>
     </div>
     <div class="mb-3">
       <label for="description" class="form-label">Description</label>
-      <textarea class="form-control" id="description" rows="3"></textarea>
+      <textarea class="form-control" id="description" rows="3" formControlName="description"></textarea>
     </div>
     <div class="mb-3">
-      <label for="search" class="form-label">Je recherche </label>
-      <select class="form-select" aria-label="search" id="search" required>
-        <option value="1">des hommes</option>
+      <label for="desiredGender" class="form-label">Je recherche </label>
+      <select class="form-select" aria-label="desiredGender" id="desiredGender" formControlName="desiredGender">
+        <option selected value="1">des hommes</option>
         <option value="2">des femmes</option>
         <option value="3">les deux</option>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary">S'inscrire</button>
+    <div>
+      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">S'inscrire</button>
+    </div>
   </form>
 </div>
