@@ -27,7 +27,7 @@ const getUser = (email) => {
     console.log(email);
     return esClient.search({
             index,
-            body: {"query": {"match": {"email": email}}},
+            body: {"query": {"match_phrase": {"email": email}}},
         })
         .then(response => response)
         .catch((error) => {
