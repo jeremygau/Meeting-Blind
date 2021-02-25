@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
   templateUrl: './new-user.component.html',
   styleUrls: ['./new-user.component.scss']
 })
+
 export class NewUserComponent implements OnInit {
 
   userForm!: FormGroup;
@@ -19,12 +20,13 @@ export class NewUserComponent implements OnInit {
     this.initForm();
   }
 
-  initForm(): void {
+  private initForm(): void {
     this.userForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      phone: ['', Validators.required],
       city: ['', Validators.required],
       search: ['', Validators.required]
     });
@@ -33,6 +35,7 @@ export class NewUserComponent implements OnInit {
   onSubmitForm(): void {
     const formValue = this.userForm.value;
     const newUser = new User(
+      0,
       formValue.email,
       formValue.password,
       formValue.firstName,
@@ -40,7 +43,10 @@ export class NewUserComponent implements OnInit {
       formValue.city,
       formValue.gender,
       formValue.description,
-      formValue.search
+      formValue.search,
+      formValue.phone,
+      [],
+      []
     );
     this.httpService.createUser(newUser).subscribe((response) => {
       if (response && response.email === 'ok') {
@@ -48,11 +54,12 @@ export class NewUserComponent implements OnInit {
       }
       else {
         alert('User Existe !');
+        return;
       }
     }, (e) => {
       console.log('erreur', e);
     }, () => {
-      this.router.navigate(['inscription']);
+      this.router.navigate(['']);
     });
   }
 
