@@ -69,16 +69,16 @@ export class NewUserComponent implements OnInit {
     );
     console.log(newUser);
     this.httpService.createUser(newUser).subscribe((response) => {
+      console.log(response);
       if (response && response.email === 'ok') {
         alert('L\'utilisateur a été crée');
+        this.router.navigate(['']);
       }
       else {
         alert('L\'utilisateur existe deja !');
       }
     }, (e) => {
       console.log('erreur', e);
-    }, () => {
-      this.router.navigate(['']);
     });
   }
 }

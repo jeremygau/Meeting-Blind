@@ -23,16 +23,18 @@ const store = user => esClient.index({
     handleElasticsearchError(error);
 });
 
-const getUser =
-    email => esClient.search(
-        {
+const getUser = (email) => {
+    console.log(email);
+    return esClient.search({
             index,
-            body: {"query": {"match": {"email": {"query": email}}}},
+            body: {"query": {"match": {"email": email}}},
         })
         .then(response => response)
         .catch((error) => {
+            console.log(error);
             handleElasticsearchError(error);
         });
+};
 
 const getUsersForCity = (city, desiredGender, requesterGender) => esClient.search({
     index,
@@ -41,25 +43,21 @@ const getUsersForCity = (city, desiredGender, requesterGender) => esClient.searc
             "bool": {
                 "must": [
                     {"match": {
-                            "city": {"query": city}
+                            "city": city
                         }
                     },
                     {"match": {
-                            "gender": {"query": desiredGender}
+                            "gender": desiredGender
                         }
                     },
                     {"bool": {
                             "should": [
                                 {"match": {
-                                        "search": {
-                                            "query": requesterGender
-                                        }
+                                        "desiredGender": requesterGender
                                     }
                                 },
                                 {"match": {
-                                        "search": {
-                                            "query": "allGenders" // TODO Corriger quand on saura comment c'est traduit
-                                        }
+                                        "desiredGender": "allGenders" // TODO Corriger quand on saura comment c'est traduit
                                     }
                                 }
                             ]

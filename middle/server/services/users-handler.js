@@ -8,7 +8,7 @@ async function create(req, res) {
             res.send({});
         } else {
             await usersRep.store(req.body);
-            res.send({firstName: 'ok'});
+            res.send({email: 'ok'});
         }
     } catch (e) {
         res.status(400).end();
