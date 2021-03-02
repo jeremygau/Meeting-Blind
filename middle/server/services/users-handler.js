@@ -1,4 +1,5 @@
 import usersRep from './users-repository';
+import conversationsHandler from './conversations-handler';
 
 async function create(req, res) {
     res.set('Content-Type', 'application/json');
@@ -26,29 +27,58 @@ async function userExist(email) {
 }
 
 async function getUserById(req, res) {
+    res.set('Content-Type', 'application/json');
     try {
-        const result = await usersRep.getUserById(req.params.id);
-        if (result.body.hits.total.value === 0) {
+        const user = getUserByIdGeneric(req.params.id);
+        if(user === null) {
             res.send({});
+        } else {
+            res.send(user);
         }
-        const user = result.body.hits.hits._source;
-        res.send(user);
     }catch (error) {
         res.status(400).end();
     }
 }
 
+async function getUserByIdGeneric(userId) {
+    try {
+        const result = await usersRep.getUserById(userId);
+        if (result.body.hits.total.value === 0) {
+            return null;
+        }
+        return result.body.hits.hits._source;
+    }catch (error) {
+        res.status(400).end();
+    }
+}
+
+async function likeEachOther(user1Id, user2Id) {
+    let result = await usersRep.getUserById(user1Id);
+    if(result.body.hits.total.value === 0) {
+        return false;
+    }
+    let user = result.body.hits.hits._source;
+    return (user.likedUsers.includes(user2Id) && user.likedBy.includes(user2Id));
+}
+
 async function addLike(req, res) {
+    res.set('Content-Type', 'application/json');
     let requesterId = 0//TODO get the id contains in the cookie.
     let likedUserId = req.body.id;
     await updateLike(requesterId, likedUserId, addFromArray, res);
+    if(await likeEachOther(requesterId, likedUserId)) {
+        let created = await conversationsHandler.createConversation(likedUserId);
+        if(! created) res.send({status: 'conversation not created'});
+    }
     res.send({status: 'ok'});
 }
 
 async function removeLike(req, res) {
+    res.set('Content-Type', 'application/json');
     let requesterId = 0//TODO get the id contains in the cookie.
     let likedUserId = req.params.id;
     await updateLike(requesterId, likedUserId, removeFromArray, res);
+    await conversationsHandler.blockConversation(requesterId, likedUserId);
     res.send({status: 'ok'});
 }
 
@@ -88,6 +118,24 @@ async function updateLikeForLikedUser(requesterId, likedUserId, updateArrayFunct
     }
 }
 
+async function getUsersFromTown(req, res) {
+    try {
+        let requesterId = 0;//TODO récupérer id via cookie
+        let requester = await getUserByIdGeneric(requesterId);
+        if (requester === null) {
+            res.status(404).end();
+        }
+        let result = await usersRep.getUsersForCity(req.params.city, requester.desiredGender, requester.gender);
+        let users = [];
+        for (let obj of result.body.hits.hits) {
+            users.push(obj._source);
+        }
+        res.send(users);
+    }catch(error) {
+        res.status(400).end();
+    }
+}
+
 function removeFromArray(array, item) {
     let index = array.indexOf(item);
     if (index > 1)
@@ -98,4 +146,4 @@ function addFromArray(array, item) {
     array.push(item);
 }
 
-export default {create, userExist, getUserById, addLike, removeLike};
+export default {create, userExist, getUserById, addLike, removeLike, likeEachOther, getUserByIdGeneric, getUsersFromTown};

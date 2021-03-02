@@ -39,6 +39,9 @@ export class SingleUserComponent implements OnInit {
           this.router.navigate(['login']); // TODO vérifier que la route est bien correcte quand elle sera implémentée
         } else if (response.status === 'user unknown') {
           alert('L\'utilisateur n\'existe pas ou plus.');
+        } else if (response.status === 'conversation not created') {
+          alert('Une erreur interne au serveur est survenue : contactez un administrateur pour pouvoir démarrer une' +
+            ' conversation');
         }
       },
       () => {
