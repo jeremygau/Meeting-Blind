@@ -5,6 +5,6 @@ import usersHandler from './users-handler';
 
 let searchRouter = express.Router();
 
-//searchRouter.get('/:city', asyncHandler(usersHandler.getUsersFromTown));
+searchRouter.get('/:city', asyncHandler(usersHandler.getUsersFromTown));
 
 export default searchRouter;

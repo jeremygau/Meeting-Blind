@@ -28,4 +28,13 @@ export class HttpService {
   public createUser(user: User): Observable<any> {
     return this.http.post<User>(this.serverUrl + 'users', user, this.httpOptions);
   }
+
+  public like(idLiked: number): Observable<any> {
+    return this.http.put(this.serverUrl + 'like/', {id: idLiked.toString()});
+  }
+
+  public dislike(idLiked: number): Observable<any> {
+    return this.http.delete(this.serverUrl + 'like/' + idLiked.toString());
+  }
+
 }

@@ -24,10 +24,9 @@ const store = user => esClient.index({
 });
 
 const getUser = (email) => {
-    console.log(email);
     return esClient.search({
             index,
-            body: {"query": {"match_phrase": {"email": email}}},
+            body: {"query": {"match_phrase": {"email": email}}}
         })
         .then(response => response)
         .catch((error) => {
@@ -36,41 +35,70 @@ const getUser = (email) => {
         });
 };
 
-const getUsersForCity = (city, desiredGender, requesterGender) => esClient.search({
-    index,
-    body: {
-        "query": {
-            "bool": {
-                "must": [
-                    {"match": {
-                            "city": city
-                        }
-                    },
-                    {"match": {
-                            "gender": desiredGender
-                        }
-                    },
-                    {"bool": {
-                            "should": [
-                                {"match": {
-                                        "desiredGender": requesterGender
+const getUserById = (id) => {
+    return esClient.search({
+        index,
+        body: {"query": {"term": {"id": id}}}
+        })
+        .then(response => response)
+        .catch((error) => {
+            console.log(error);
+            handleElasticsearchError(error);
+        });
+};
+
+const deleteUserById = (id) => {
+    return esClient.delete_by_query({
+        index,
+        refresh: true,
+        body: {"query": {"term": {"id": id}}}
+        })
+        .then(response => response)
+        .catch((error) => {
+            console.log(error);
+            handleElasticsearchError(error);
+        });
+};
+
+
+const getUsersForCity = (city, desiredGender, requesterGender) => {
+    return esClient.search({
+        index,
+        body: {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {
+                                "city": city
+                            }
+                        },
+                        {"term": {
+                                "gender": desiredGender
+                            }
+                        },
+                        {"bool": {
+                                "should": [
+                                    {"term": {
+                                            "desiredGender": requesterGender
+                                        }
+                                    },
+                                    {"term": {
+                                            "desiredGender": "allGenders" // TODO Corriger quand on saura comment c'est traduit
+                                        }
                                     }
-                                },
-                                {"match": {
-                                        "desiredGender": "allGenders" // TODO Corriger quand on saura comment c'est traduit
-                                    }
-                                }
-                            ]
+                                ]
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         }
-    }
-}).then(response => response)
+    })
+    .then(response => response)
     .catch((error) => {
         handleElasticsearchError(error);
-    });
+    })
+};
 
 
-export default {getUser, store, getAll, getUsersForCity};
+export default {getUser, store, getAll, getUsersForCity, getUserById, removeUserById: deleteUserById};
