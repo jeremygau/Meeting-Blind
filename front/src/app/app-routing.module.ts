@@ -5,14 +5,16 @@ import { DateSeekerComponent } from './date-seeker/date-seeker.component';
 import { SingleUserComponent } from './single-user/single-user.component';
 import { SingleConversationComponent } from './single-conversation/single-conversation.component';
 import {ConversationsComponent} from './conversations/conversations.component';
+import {UserViewComponent} from './user-view/user-view.component';
 
 const routes: Routes = [
   {path: '', component: DateSeekerComponent},
   {path: 'inscription', component: NewUserComponent},
   {path: 'search', component: DateSeekerComponent},
   {path: 'users/:id', component: SingleUserComponent},
+  {path: 'profile', component: UserViewComponent}
   {path: 'conv/:id', component: SingleConversationComponent},
-  {path: 'conv/', component: ConversationsComponent}
+  {path: 'conv/', component: ConversationsComponent},
 ];
 
 @NgModule({
@@ -25,5 +27,6 @@ export const routedComponents = [
   NewUserComponent,
   SingleUserComponent,
   SingleConversationComponent,
-  ConversationsComponent
+  ConversationsComponent,
+  UserViewComponent
 ];

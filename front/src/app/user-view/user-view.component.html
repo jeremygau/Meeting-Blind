@@ -1,0 +1,31 @@
+<div class="container bg-light">
+  <div class="row text-center ">
+    <div class="col">
+      <small>Mail :</small><br>
+      <p>{{user.email}}</p>
+    </div>
+    <div class="col">
+      <small>Nom complet :</small><br>
+      <p>{{user.firstName}}</p>
+    </div>
+    <div class="col">
+      <small>Ville :</small><br>
+      <p>{{user.city}}</p>
+    </div>
+    <div class="col">
+      <small>Genre :</small><br>
+      <p>{{user.gender}}</p>
+    </div>
+    <div class="col">
+      <small>Genre recherché :</small><br>
+      <p>{{user.desiredGender}}</p>
+    </div>
+    <div class="col">
+      <small>Description :</small><br>
+      <p>{{user.description}}</p>
+    </div>
+    <div class="col">
+      <a routerLink="editProfile" class="btn btn-block btn-outline-dark">Modifier</a>
+    </div>
+  </div>
+</div>
