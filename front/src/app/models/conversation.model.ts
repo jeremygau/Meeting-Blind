@@ -7,7 +7,7 @@ export class Conversation {
     public user1: User,
     public user2: User,
     public messages: Message[],
-    public blocked: boolean,
+    public isBlocked: boolean,
     public hasUnreadMessages: boolean
   ) {}
 }

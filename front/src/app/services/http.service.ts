@@ -1,7 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
+import { Message } from '../models/message.model';
 
 
 @Injectable()
@@ -35,6 +36,29 @@ export class HttpService {
 
   public dislike(idLiked: number): Observable<any> {
     return this.http.delete(this.serverUrl + 'like/' + idLiked.toString());
+  }
+
+  public getConversations(): Observable<any> {
+    return this.http.get(this.serverUrl + 'conv/');
+  }
+
+  public getConversation(userId: number): Observable<any> {
+    return this.http.get(this.serverUrl + 'conv/' + userId.toString());
+  }
+
+  public deleteConversation(userId: number): Observable<any> {
+    return this.http.delete(this.serverUrl + 'conv/' + userId.toString(), {observe: 'response'});
+  }
+
+  public addMessage(userId: number, message: Message): Observable<any> {
+    return this.http.post<Message>(this.serverUrl + 'conv/', message, this.httpOptions);
+  }
+
+  public deleteMessage(userId: number, messageId: number): Observable<any> {
+    const params = new HttpParams()
+            .set('userId', userId.toString())
+            .set('messageId', messageId.toString());
+    return this.http.delete(this.serverUrl + 'conv/', {params, observe: 'response'});
   }
 
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { HttpService } from '../services/http.service';
 import { User } from '../models/user.model';
@@ -18,8 +18,8 @@ export class DateSeekerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public onSubmit(form: NgForm): void {
-    const city = form.value.town;
+  onSubmit(form: NgForm): void {
+    const city = form.value.city;
     this.searchQuery = city;
     this.httpService.getUsersForTown(city).subscribe(
       (users: User[]) => { this.usersInCity = users; },

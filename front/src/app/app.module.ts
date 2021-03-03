@@ -12,7 +12,7 @@ import { UsersComponent } from './users/users.component';
   declarations: [
     AppComponent,
     routedComponents,
-    UsersComponent
+    UsersComponent,
   ],
   imports: [
     BrowserModule,

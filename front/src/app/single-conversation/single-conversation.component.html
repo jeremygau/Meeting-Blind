@@ -1,0 +1,21 @@
+<ul>
+  <li *ngFor="let message of conversation.messages">
+    <p [ngStyle]="{color: getNameColor(message)}">
+      <a routerLink="/users/[message.sender]">{{getSenderName(message)}} :</a>
+      <button *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
+        <img src="app/resources/trash-can-.jpg" title="Supprimer le message" alt="Supprimer le message"/>
+      </button>
+    </p>
+    <p>{{message.content}}</p>
+  </li>
+  <li *ngIf="conversation.isBlocked" [ngStyle]="{color: 'red'}"> {{systemMessage}}</li>
+</ul>
+<form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
+  <div class="form-group">
+    <label for="message">Message</label>
+    <input type="text" id="message" class="form-control" name="city" minlength="1" ngModel required>
+  </div>
+  <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation.isBlocked">Envoyer</button>
+</form>
+<button class="btn btn-danger" (click)="deleteConversation()">Supprimer la conversation</button>
+

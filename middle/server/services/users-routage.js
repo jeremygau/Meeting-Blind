@@ -7,6 +7,6 @@ let usersRouter = express.Router();
 
 usersRouter.post('/', asyncHandler(usersHandler.create));
 
-usersRouter.get('/:id', asyncHandler(userHandler.getUserById));
+usersRouter.get('/:id', asyncHandler(usersHandler.getUserById));
 
 export default usersRouter;

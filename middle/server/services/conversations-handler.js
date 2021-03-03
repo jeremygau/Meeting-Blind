@@ -28,7 +28,7 @@ async function blockConversation(requesterId, userId) {
     let result = await convRep.getConversation(requesterId, userId);
     if (result.body.hits.total.value === 0) return false;
     let conv = result.body.hits.hits._source;
-    conv.blocked = true;
+    conv.isBlocked = true;
     await convRep.deleteConversation(requesterId, userId);
     await convRep.store(conv);
     return true;
@@ -49,7 +49,7 @@ async function getConversation(req, res) {
         let userId = req.params.id;
         let conv = await getConversationGeneric(userId, requesterId);
         if (conv === null) res.status(403).end();
-        markAsReadIfValid(conversation, requesterId);
+        markAsReadIfValid(conv, requesterId);
         res.send(conv)
     } catch (error) {
         res.status(400).end();
@@ -68,6 +68,11 @@ async function getConversationGeneric(userId, requesterId) {
     return conv;
 }
 
+/**
+ * Find all the conversations the requester is involved in and send them as an array. Put the whole user object for user1
+ * and user2, with the convention that user1 is always the requester.
+ */
+
 async function getAllConversations(req, res) {
     try {
         let requesterId = 0 //TODO récupérer Id via cookie
@@ -79,7 +84,7 @@ async function getAllConversations(req, res) {
 
         for (let conversation of conversations) {
             sortMessagesByTimestamp(conversation);
-            conversation.messages = [getLastMessage(conversation)];
+            conversation.messages = getLastMessage(conversation);
             if (parseInt(conversation.user1) === requesterId) {
                 conversation.user2 = await usersHandler.getUserByIdGeneric(conversation.user2);
             } else {
@@ -87,13 +92,19 @@ async function getAllConversations(req, res) {
             }
             conversation.user1 = await usersHandler.getUserByIdGeneric(requesterId);
         }
+        res.send(conversations);
     } catch (error) {
         res.status(400).end();
     }
 }
 
 function getLastMessage(conversation) {
-    return conversation.messages[conversation.messages.length - 1];
+    if(conversation.messages.length === 0) return [];
+    let message = conversation.messages[conversation.messages.length - 1]
+    if(message.content.length > 50) {
+        message.content = message.content.substring(0, 51) + ' ...';
+    }
+    return [message];
 }
 
 async function addMessage(req, res) {

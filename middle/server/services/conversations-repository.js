@@ -14,7 +14,7 @@ const createEmptyConversation = (user1Id, user2Id) => {
         user1: user1Id,
         user2: user2Id,
         messages: [],
-        blocked: false,
+        isBlocked: false,
         hasUnreadMessages: false
     }
     esClient.index({
