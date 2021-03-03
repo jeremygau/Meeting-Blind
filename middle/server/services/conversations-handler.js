@@ -76,26 +76,31 @@ async function getConversationGeneric(userId, requesterId) {
 async function getAllConversations(req, res) {
     try {
         let requesterId = 0 //TODO récupérer Id via cookie
-        let results = await convRep.getAllConversationsFor(requesterId);
-        let conversations = [];
-        for (let conversation of results.body.hits.hits) {
-            conversations.push(conversation._source);
-        }
-
-        for (let conversation of conversations) {
-            sortMessagesByTimestamp(conversation);
-            conversation.messages = getLastMessage(conversation);
-            if (parseInt(conversation.user1) === requesterId) {
-                conversation.user2 = await usersHandler.getUserByIdGeneric(conversation.user2);
-            } else {
-                conversation.user2 = await usersHandler.getUserByIdGeneric(conversation.user1);
-            }
-            conversation.user1 = await usersHandler.getUserByIdGeneric(requesterId);
-        }
+        const conversations = getAllConversationsGeneric(requesterId);
         res.send(conversations);
     } catch (error) {
         res.status(400).end();
     }
+}
+
+async function getAllConversationsGeneric(requesterId) {
+    let results = await convRep.getAllConversationsFor(requesterId);
+    let conversations = [];
+    for (let conversation of results.body.hits.hits) {
+        conversations.push(conversation._source);
+    }
+
+    for (let conversation of conversations) {
+        sortMessagesByTimestamp(conversation);
+        conversation.messages = getLastMessage(conversation);
+        if (parseInt(conversation.user1) === requesterId) {
+            conversation.user2 = await usersHandler.getUserByIdGeneric(conversation.user2);
+        } else {
+            conversation.user2 = await usersHandler.getUserByIdGeneric(conversation.user1);
+        }
+        conversation.user1 = await usersHandler.getUserByIdGeneric(requesterId);
+    }
+    return conversations;
 }
 
 function getLastMessage(conversation) {
@@ -115,7 +120,7 @@ async function addMessage(req, res) {
 
         let conv = await getConversationGeneric(userId);
         if (conv === null) res.status(404).end();
-        message.id = conv.messages.length;
+        message.id = conv.messages.length === 0 ? 0 : conv.messages[conv.messages.length - 1] + 1;
         conv.messages.push(message);
         conv.hasUnreadMessages = true;
         await convRep.deleteConversation(requesterId, userId);
@@ -150,6 +155,17 @@ async function deleteMessage(req, res) {
     }
 }
 
+async function hasNewMessages(req, res) {
+    const requesterId = 0; //TODO récupérer l'id avec cookie
+    const conversations = getAllConversationsGeneric(requesterId);
+    for(const conv of conversations) {
+        if(conv.hasUnreadMessages && conv.messages[0].sender !== requesterId) {
+            return res.send('true');
+        }
+    }
+    res.send('false');
+}
+
 function sortMessagesByTimestamp(conversation) {
     conversation.messages.sort(function (a, b) {
         return (new Date(b.timestamp) - new Date(a.timestamp));
@@ -180,5 +196,6 @@ export default {
     getAllConversations,
     addMessage,
     deleteMessage,
-    blockConversation
+    blockConversation,
+    hasNewMessages
 }

@@ -4,7 +4,10 @@
       <li routerLinkActive="active"><a routerLink="inscription">Inscription</a></li>
       <li routerLinkActive="active"><a routerLink="search">Trouver Charli.e</a></li>
       <li routerLinkActive="active"><a routerLink="profile" class="btn">Profil</a></li>
-      <li routerLinkActive="active"><a routerLink="conv">Mes Conversations</a></li>
+      <li routerLinkActive="active"><a routerLink="conv">Mes Conversations
+        <img *ngIf="hasNewMessages" src="app/resources/heart.png" alt="" />
+        </a>
+      </li>
     </ul>
   </div>
 </nav>

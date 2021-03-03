@@ -9,6 +9,7 @@ conversationsRouter.get('/:id', asyncHandler(conversationsHandler.getConversatio
 conversationsRouter.delete('/:id', asyncHandler(conversationsHandler.deleteConversation));
 conversationsRouter.post('/', asyncHandler(conversationsHandler.addMessage));
 conversationsRouter.delete('/:userId-AND-messageId', asyncHandler(conversationsHandler.deleteMessage));
+conversationsRouter.get('/newMessages', asyncHandler(conversationsHandler.hasNewMessages));
 //TODO faire la route pour la suppression d'un message, idealement en delete.
 /*Pour ça : vérifier la tronche de l'URL envoyé avec delete et les params.*/
 
