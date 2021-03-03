@@ -8,6 +8,12 @@ async function create(req, res) {
         if (userBool) {
             res.send({});
         } else {
+            let newId = 0;
+            let result = await usersRep.getAll();
+            if (result.body.hits.total.value !== null) {
+                newId = result.body.hits.total.value + 1;
+            }
+            req.body.id = newId;
             await usersRep.store(req.body);
             res.send({email: 'ok'});
         }
@@ -29,7 +35,7 @@ async function userExist(email) {
 async function getUserById(req, res) {
     res.set('Content-Type', 'application/json');
     try {
-        const user = getUserByIdGeneric(req.params.id);
+        const user = await getUserByIdGeneric(req.params.id);
         if(user === null) {
             res.send({});
         } else {
@@ -46,7 +52,7 @@ async function getUserByIdGeneric(userId) {
         if (result.body.hits.total.value === 0) {
             return null;
         }
-        return result.body.hits.hits._source;
+        return result.body.hits.hits[0]._source;
     }catch (error) {
         res.status(400).end();
     }
@@ -57,7 +63,7 @@ async function likeEachOther(user1Id, user2Id) {
     if(result.body.hits.total.value === 0) {
         return false;
     }
-    let user = result.body.hits.hits._source;
+    let user = result.body.hits.hits._source; //todo regarde au dessus comment j'ai fait si ca marche pas indice: hits[0]
     return (user.likedUsers.includes(user2Id) && user.likedBy.includes(user2Id));
 }
 
@@ -120,7 +126,7 @@ async function updateLikeForLikedUser(requesterId, likedUserId, updateArrayFunct
 
 async function getUsersFromTown(req, res) {
     try {
-        let requesterId = 0;//TODO récupérer id via cookie
+        let requesterId = 0;//TODO: récupérer id via cookie
         let requester = await getUserByIdGeneric(requesterId);
         if (requester === null) {
             res.status(404).end();

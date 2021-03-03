@@ -7,12 +7,14 @@ import { HttpService } from './services/http.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UsersComponent } from './users/users.component';
+import { UserViewComponent } from './user-view/user-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     routedComponents,
-    UsersComponent
+    UsersComponent,
+    UserViewComponent
   ],
   imports: [
     BrowserModule,

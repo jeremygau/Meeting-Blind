@@ -72,7 +72,8 @@ export class NewUserComponent implements OnInit {
       console.log(response);
       if (response && response.email === 'ok') {
         alert('L\'utilisateur a été crée');
-        this.router.navigate(['']);
+        // todo: store l'id dans le cookie
+        this.router.navigate(['profile']);
       }
       else {
         alert('L\'utilisateur existe deja !');
