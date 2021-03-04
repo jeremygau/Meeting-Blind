@@ -1,8 +1,7 @@
 import convRep from './conversations-repository';
 import usersHandler from './users-handler';
 
-async function createConversation(userId) {
-    let requesterId = 0 //TODO récupérer l'id via les cookies
+async function createConversation(userId, requesterId) {
     if (!await usersHandler.likeEachOther(requesterId, userId)) {
         return false;
     }
@@ -15,7 +14,7 @@ async function createConversation(userId) {
 
 async function deleteConversation(req, res) {
     try {
-        let requesterId = 0 //TODO récupérer id via cookie
+        let requesterId = req.session.requesterId;
         let userId = req.params.id;
         await convRep.deleteConversation(requesterId, userId);
         res.status(200).end();
@@ -27,7 +26,7 @@ async function deleteConversation(req, res) {
 async function blockConversation(requesterId, userId) {
     let result = await convRep.getConversation(requesterId, userId);
     if (result.body.hits.total.value === 0) return false;
-    let conv = result.body.hits.hits._source;
+    let conv = result.body.hits.hits[0]._source;
     conv.isBlocked = true;
     await convRep.deleteConversation(requesterId, userId);
     await convRep.store(conv);
@@ -45,7 +44,7 @@ function markAsReadIfValid(conversation, requesterId) {
 async function getConversation(req, res) {
     try {
         res.set('Content-Type', 'application/json');
-        let requesterId = 0; //TODO récupérer l'id via cookie
+        let requesterId = req.session.requesterId;
         let userId = req.params.id;
         let conv = await getConversationGeneric(userId, requesterId);
         if (conv === null) res.status(403).end();
@@ -61,7 +60,7 @@ async function getConversationGeneric(userId, requesterId) {
     if (result.body.hits.total.value === 0) {
         return null;
     }
-    let conv = result.body.hits.hits._source;
+    let conv = result.body.hits.hits[0]._source;
     sortMessagesByTimestamp(conv);
     conv.user1 = await usersHandler.getUserByIdGeneric(requesterId);
     conv.user2 = await usersHandler.getUserByIdGeneric(userId);
@@ -75,7 +74,7 @@ async function getConversationGeneric(userId, requesterId) {
 
 async function getAllConversations(req, res) {
     try {
-        let requesterId = 0 //TODO récupérer Id via cookie
+        let requesterId = req.session.requesterId;
         const conversations = getAllConversationsGeneric(requesterId);
         res.send(conversations);
     } catch (error) {
@@ -114,7 +113,7 @@ function getLastMessage(conversation) {
 
 async function addMessage(req, res) {
     try {
-        let requesterId = 0; //TODO récupérer Id via cookie;
+        let requesterId = req.session.requesterId;
         let userId = req.body.id;
         let message = req.body.message;
 
@@ -133,7 +132,7 @@ async function addMessage(req, res) {
 
 async function deleteMessage(req, res) {
     try {
-        let requesterId = 0; //TODO récupérer Id via cookie;
+        let requesterId = req.session.requesterId;
         let userId = req.params.userId;
         let messageId = req.params.messageId;
 
@@ -156,7 +155,7 @@ async function deleteMessage(req, res) {
 }
 
 async function hasNewMessages(req, res) {
-    const requesterId = 0; //TODO récupérer l'id avec cookie
+    const requesterId = req.session.requesterId;
     const conversations = getAllConversationsGeneric(requesterId);
     for(const conv of conversations) {
         if(conv.hasUnreadMessages && conv.messages[0].sender !== requesterId) {

@@ -68,17 +68,16 @@ export class NewUserComponent implements OnInit {
       []
     );
     console.log(newUser);
-    this.httpService.createUser(newUser).subscribe((response) => {
+    this.httpService.createUser(newUser).subscribe((response: any) => {
       console.log(response);
       if (response && response.email === 'ok') {
         alert('L\'utilisateur a été crée');
-        // todo: store l'id dans le cookie
         this.router.navigate(['profile']);
       }
       else {
         alert('L\'utilisateur existe deja !');
       }
-    }, (e) => {
+    }, (e: any) => {
       console.log('erreur', e);
     });
   }

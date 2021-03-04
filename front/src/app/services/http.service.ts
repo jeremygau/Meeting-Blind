@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { Message } from '../models/message.model';
 import { NotificationsService } from './notifications.service';
+import { ConnexionId } from '../models/connexionId.model';
 
 
 @Injectable()
@@ -68,6 +69,18 @@ export class HttpService {
     return this.http.delete(this.serverUrl + 'conv/', {params, observe: 'response'});
   }
 
+  public connectUser(connexionId: ConnexionId): Observable<any> {
+    return this.http.post<ConnexionId>(this.serverUrl + 'connection/connect', connexionId, this.httpOptions);
+  }
+
+  public disconnectUser(): Observable<any> {
+    return this.http.get(this.serverUrl + 'connection/disconnect', {observe: 'response'});
+  }
+
+  public getRequesterId(): Observable<any> {
+    return this.http.get(this.serverUrl + 'cookieStatus', {responseType: 'json'});
+  }
+
   private checkForNewMessages(): void {
     this.http.get(this.serverUrl + 'conv/newMessages', {responseType: 'text'}).subscribe(
       (response) => {
@@ -76,5 +89,7 @@ export class HttpService {
       }
     );
   }
+
+
 
 }

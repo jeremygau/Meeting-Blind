@@ -28,7 +28,7 @@ export class SingleUserComponent implements OnInit {
 
   like(): void {
     this.httpService.like(this.user.id).subscribe(
-      (response) => {
+      (response: any) => {
         if (!response) {
           alert('Une erreur est survenue. Veuillez réessayer. Si l\'erreur persiste, contactez un administrateur');
         }
@@ -52,7 +52,7 @@ export class SingleUserComponent implements OnInit {
 
   dislike(): void {
     this.httpService.dislike(this.user.id).subscribe(
-      (response) => {
+      (response: any) => {
         if (!response) {
           alert('Une erreur est survenue. Veuillez réessayer. Si l\'erreur persiste, contactez un administrateur');
         }

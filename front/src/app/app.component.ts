@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NotificationsService } from './services/notifications.service';
 import { Subscription } from 'rxjs';
+import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +13,10 @@ export class AppComponent implements OnInit, OnDestroy{
   title = 'front';
   hasNewMessages = false;
   messagesNotificationSubscription!: Subscription;
+  isConnected = false;
+  connectionSubscription!: Subscription;
 
-  constructor(private notificationsService: NotificationsService) { }
+  constructor(private notificationsService: NotificationsService, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.messagesNotificationSubscription = this.notificationsService.newMessageSubject.subscribe(
@@ -20,10 +24,26 @@ export class AppComponent implements OnInit, OnDestroy{
         this.hasNewMessages = hasNewMessages;
       }
     );
+    this.connectionSubscription = this.authService.authSubject.subscribe(
+      (isConnected: boolean) => {
+        this.isConnected = isConnected;
+      }
+    );
+  }
+
+  disconnect(): void {
+    const isDisconnected = this.authService.disconnectUser();
+    if (isDisconnected) {
+      this.router.navigate(['']);
+    }
+    else {
+      alert('Un problème est survenu lors de la tentative de déconnexion, veuillez réessayer.');
+    }
   }
 
   ngOnDestroy(): void {
     this.messagesNotificationSubscription.unsubscribe();
+    this.connectionSubscription.unsubscribe();
   }
 
 

@@ -8,12 +8,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UsersComponent } from './users/users.component';
 import { NotificationsService } from './services/notifications.service';
+import { UserConnectionComponent } from './user-connection/user-connection.component';
+import {AuthService} from './services/auth.service';
+import { AuthGuard } from './services/auth-guard.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     routedComponents,
     UsersComponent,
+    UserConnectionComponent,
   ],
   imports: [
     BrowserModule,
@@ -24,7 +28,9 @@ import { NotificationsService } from './services/notifications.service';
   ],
   providers: [
     HttpService,
-    NotificationsService
+    NotificationsService,
+    AuthService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

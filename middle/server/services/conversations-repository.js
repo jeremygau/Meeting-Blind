@@ -1,6 +1,6 @@
 import esClient from "./es-client";
 
-const index = 'local_conversations';
+const index = 'local_conv';
 
 const handleElasticsearchError = (error) => {
     if (error.status === 404) {

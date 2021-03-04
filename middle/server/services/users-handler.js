@@ -13,6 +13,7 @@ async function create(req, res) {
             if (result.body.hits.total.value !== null) {
                 newId = result.body.hits.total.value + 1;
             }
+            req.session.requesterId = newId;
             req.body.id = newId;
             await usersRep.store(req.body);
             res.send({email: 'ok'});
@@ -63,17 +64,17 @@ async function likeEachOther(user1Id, user2Id) {
     if(result.body.hits.total.value === 0) {
         return false;
     }
-    let user = result.body.hits.hits._source; //todo regarde au dessus comment j'ai fait si ca marche pas indice: hits[0]
+    let user = result.body.hits.hits[0]._source;
     return (user.likedUsers.includes(user2Id) && user.likedBy.includes(user2Id));
 }
 
 async function addLike(req, res) {
     res.set('Content-Type', 'application/json');
-    let requesterId = 0//TODO get the id contains in the cookie.
+    let requesterId = req.session.requesterId;
     let likedUserId = req.body.id;
     await updateLike(requesterId, likedUserId, addFromArray, res);
     if(await likeEachOther(requesterId, likedUserId)) {
-        let created = await conversationsHandler.createConversation(likedUserId);
+        let created = await conversationsHandler.createConversation(likedUserId, requesterId);
         if(! created) res.send({status: 'conversation not created'});
     }
     res.send({status: 'ok'});
@@ -81,7 +82,7 @@ async function addLike(req, res) {
 
 async function removeLike(req, res) {
     res.set('Content-Type', 'application/json');
-    let requesterId = 0//TODO get the id contains in the cookie.
+    let requesterId = req.session.requesterId;
     let likedUserId = req.params.id;
     await updateLike(requesterId, likedUserId, removeFromArray, res);
     await conversationsHandler.blockConversation(requesterId, likedUserId);
@@ -100,7 +101,7 @@ async function updateLikeForRequester(requesterId, likedUserId, updateArrayFunct
         if (result.body.hits.total.value === 0) {
             res.send({status: 'requester unknown'});
         }
-        let requester = result.body.hits.hits._source;
+        let requester = result.body.hits.hits[0]._source;
         updateArrayFunction(requester.likedUsers, likedUserId);
         await usersRep.removeUserById(requesterId);
         await usersRep.store(requester);
@@ -115,7 +116,7 @@ async function updateLikeForLikedUser(requesterId, likedUserId, updateArrayFunct
         if (result.body.hits.total.value === 0) {
             res.send({status: 'user unknown'});
         }
-        let likedUser = result.body.hits.hits._source;
+        let likedUser = result.body.hits.hits[0]._source;
         updateArrayFunction(likedUser.likedBy, requesterId);
         await usersRep.removeUserById(likedUserId);
         await usersRep.store(likedUser);
@@ -126,7 +127,7 @@ async function updateLikeForLikedUser(requesterId, likedUserId, updateArrayFunct
 
 async function getUsersFromTown(req, res) {
     try {
-        let requesterId = 0;//TODO: récupérer id via cookie
+        let requesterId = req.session.requesterId;
         let requester = await getUserByIdGeneric(requesterId);
         if (requester === null) {
             res.status(404).end();

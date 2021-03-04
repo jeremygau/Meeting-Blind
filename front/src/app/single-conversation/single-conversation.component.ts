@@ -39,7 +39,7 @@ export class SingleConversationComponent implements OnInit {
 
   deleteMessage(message: Message): void {
     this.httpService.deleteMessage(this.conversation.user2.id, message.id).subscribe(
-      (response) => {
+      (response: any) => {
         switch (response.status) {
           case 204: this.ngOnInit(); break;
           case 403: alert('Vous n\'êtes pas autorisé à supprimer un message que vous n\'avez pas envoyé.'); break;
@@ -64,7 +64,7 @@ export class SingleConversationComponent implements OnInit {
   deleteConversation(): void {
     if (confirm('Cette conversation sera supprimée pour vous et votre interlocuteur. Êtes-vous sûr ?')) {
       this.httpService.deleteConversation(this.conversation.user2.id).subscribe(
-        (response) => {
+        (response: any) => {
             if (response.status === 200) {
               this.router.navigate(['conv/']);
           }
