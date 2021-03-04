@@ -22,7 +22,7 @@ const routes: Routes = [
   /*** Mettre les autres routes ici, les routes en dessous doivent être les dernières de la liste ***/
 
   {path: 'not-found', component: PageNotFoundComponent},
-  {path: '*', redirectTo: 'not-found'}
+  {path: '**', redirectTo: 'not-found'}
 ];
 
 @NgModule({

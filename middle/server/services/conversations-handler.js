@@ -75,7 +75,7 @@ async function getConversationGeneric(userId, requesterId) {
 async function getAllConversations(req, res) {
     try {
         let requesterId = req.session.requesterId;
-        const conversations = getAllConversationsGeneric(requesterId);
+        const conversations = await getAllConversationsGeneric(requesterId);
         res.send(conversations);
     } catch (error) {
         res.status(400).end();
@@ -85,6 +85,7 @@ async function getAllConversations(req, res) {
 async function getAllConversationsGeneric(requesterId) {
     let results = await convRep.getAllConversationsFor(requesterId);
     let conversations = [];
+    if(results.body.hits.total.value === 0) { return conversations; }
     for (let conversation of results.body.hits.hits) {
         conversations.push(conversation._source);
     }
@@ -155,14 +156,21 @@ async function deleteMessage(req, res) {
 }
 
 async function hasNewMessages(req, res) {
-    const requesterId = req.session.requesterId;
-    const conversations = getAllConversationsGeneric(requesterId);
-    for(const conv of conversations) {
-        if(conv.hasUnreadMessages && conv.messages[0].sender !== requesterId) {
-            return res.send('true');
+    try {
+        const requesterId = req.session.requesterId;
+
+        if(requesterId === undefined) { res.send('false'); }
+        const conversations = await getAllConversationsGeneric(requesterId);
+        for (const conv of conversations) {
+            if (conv.hasUnreadMessages && conv.messages[0].sender !== requesterId) {
+                return res.send('true');
+            }
         }
+        res.send('false');
+    }catch(error) {
+        console.log(error);
+        res.status(400).end();
     }
-    res.send('false');
 }
 
 function sortMessagesByTimestamp(conversation) {

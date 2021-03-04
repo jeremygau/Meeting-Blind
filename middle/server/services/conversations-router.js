@@ -4,14 +4,13 @@ import conversationsHandler from './conversations-handler';
 
 let conversationsRouter = express.Router();
 
-conversationsRouter.get('/', asyncHandler(conversationsHandler.getAllConversations));
 conversationsRouter.get('/:id', asyncHandler(conversationsHandler.getConversation));
 conversationsRouter.delete('/:id', asyncHandler(conversationsHandler.deleteConversation));
 conversationsRouter.post('/', asyncHandler(conversationsHandler.addMessage));
 conversationsRouter.delete('/:userId-AND-messageId', asyncHandler(conversationsHandler.deleteMessage));
-conversationsRouter.get('/newMessages', asyncHandler(conversationsHandler.hasNewMessages));
-//TODO faire la route pour la suppression d'un message, idealement en delete.
-/*Pour ça : vérifier la tronche de l'URL envoyé avec delete et les params.*/
+conversationsRouter.get('/check/newMessages', asyncHandler(conversationsHandler.hasNewMessages));
+conversationsRouter.get('/', asyncHandler(conversationsHandler.getAllConversations));
+
 
 
 export default conversationsRouter;

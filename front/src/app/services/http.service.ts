@@ -62,10 +62,7 @@ export class HttpService {
   }
 
   public deleteMessage(userId: number, messageId: number): Observable<any> {
-    const params = new HttpParams()
-            .set('userId', userId.toString())
-            .set('messageId', messageId.toString());
-    return this.http.delete(this.serverUrl + 'conv/', {params, observe: 'response'});
+    return this.http.delete(this.serverUrl + 'conv/' + 'userId' + '-AND-' + messageId, {observe: 'response'});
   }
 
   public connectUser(connexionId: ConnexionId): Observable<any> {
@@ -81,10 +78,13 @@ export class HttpService {
   }
 
   private checkForNewMessages(): void {
-    this.http.get(this.serverUrl + 'conv/newMessages', {responseType: 'text'}).subscribe(
+    this.http.get(this.serverUrl + 'conv/check/newMessages', {responseType: 'text'}).subscribe(
       (response) => {
         const hasNewMessages = response === 'true';
         this.notificationsService.setMessageNotification(hasNewMessages);
+      }, () => {
+        console.log('error in checkMessages');
+        return false;
       }
     );
   }
