@@ -5,8 +5,10 @@ const express = require("express");
 
 const connectionRouter = express.Router();
 
-connectionRouter.post('connect', asyncHandler(connectionHandler));
-connectionRouter.get('disconnect', (req, res) => {
+connectionRouter.post('/connect', asyncHandler(connectionHandler));
+connectionRouter.get('/disconnect', (req, res) => {
     req.session.requesterId = undefined;
     res.status(200).end();
-})
+});
+
+export default connectionRouter;

@@ -8,7 +8,7 @@ import { Conversation } from '../models/conversation.model';
   styleUrls: ['./conversations.component.scss']
 })
 export class ConversationsComponent implements OnInit {
-  conversations!: Conversation[];
+  conversations: Conversation[] = [];
   requesterId!: number;
 
   constructor(private httpService: HttpService) { }

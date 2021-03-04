@@ -13,7 +13,7 @@ export class UserConnectionComponent implements OnInit {
 
   connectionForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authentificationService: AuthService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -29,13 +29,21 @@ export class UserConnectionComponent implements OnInit {
   onSubmitForm(): void {
     const formValue = this.connectionForm.value;
 
-    const isConnected = this.authentificationService.connectUser(formValue.email, formValue.password);
-    if (isConnected) {
-      this.router.navigate(['profile']);
-    }
-    else {
-      alert('l\'identifiant et/ou le mot de passe ne sont pas reconnus.');
-    }
+    this.authService.connectUser(formValue.email, formValue.password).subscribe(
+      (response: any) => {
+        console.log(response.email);
+        if (response.email === 'ok') {
+          this.authService.setIsConnected(true);
+          this.router.navigate(['profile']);
+        } else {
+          alert('l\'identifiant et/ou le mot de passe ne sont pas reconnus.');
+        }
+      },
+      (error: any) => {
+        console.log(error);
+        alert('l\'identifiant et/ou le mot de passe ne sont pas reconnus.');
+      }
+    );
   }
 
 }

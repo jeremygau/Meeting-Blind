@@ -5,6 +5,7 @@ import { User } from '../models/user.model';
 import { Message } from '../models/message.model';
 import { NotificationsService } from './notifications.service';
 import { ConnexionId } from '../models/connexionId.model';
+import { Conversation } from '../models/conversation.model';
 
 
 @Injectable()
@@ -14,11 +15,9 @@ export class HttpService {
   constructor(private http: HttpClient, private notificationsService: NotificationsService) {
   }
 
-  private httpOptions = {
-    headers: new HttpHeaders({
+  private headers = new HttpHeaders({
       'Content-Type': 'application/json'
-    })
-  };
+    });
 
   public getUsersForTown(town: string): Observable<any> {
     this.checkForNewMessages();
@@ -31,7 +30,7 @@ export class HttpService {
   }
 
   public createUser(user: User): Observable<any> {
-    return this.http.post<User>(this.serverUrl + 'users', user, this.httpOptions);
+    return this.http.post<User>(this.serverUrl + 'users', user, {headers: this.headers});
   }
 
   public like(idLiked: number): Observable<any> {
@@ -42,9 +41,9 @@ export class HttpService {
     return this.http.delete(this.serverUrl + 'like/' + idLiked.toString());
   }
 
-  public getConversations(): Observable<any> {
+  public getConversations(): Observable<Conversation[]> {
     this.checkForNewMessages();
-    return this.http.get(this.serverUrl + 'conv/');
+    return this.http.get<Conversation[]>(this.serverUrl + 'conv/');
   }
 
   public getConversation(userId: number): Observable<any> {
@@ -59,7 +58,7 @@ export class HttpService {
   }
 
   public addMessage(userId: number, message: Message): Observable<any> {
-    return this.http.post<Message>(this.serverUrl + 'conv/', message, this.httpOptions);
+    return this.http.post<Message>(this.serverUrl + 'conv/', message, {headers: this.headers});
   }
 
   public deleteMessage(userId: number, messageId: number): Observable<any> {
@@ -70,7 +69,7 @@ export class HttpService {
   }
 
   public connectUser(connexionId: ConnexionId): Observable<any> {
-    return this.http.post<ConnexionId>(this.serverUrl + 'connection/connect', connexionId, this.httpOptions);
+    return this.http.post<ConnexionId>(this.serverUrl + 'connection/connect', connexionId, {headers: this.headers});
   }
 
   public disconnectUser(): Observable<any> {

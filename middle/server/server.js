@@ -3,6 +3,7 @@ import usersRouter from "./services/users-routage";
 import searchRouter from "./services/search-router";
 import likeRouter from "./services/like-router";
 import convRouter from "./services/conversations-router";
+import connectionRouter from './services/connection-router';
 const cookieSession = require('cookie-session');
 
 const app = express();
@@ -17,6 +18,7 @@ app.use('/users', usersRouter);
 app.use('/search', searchRouter);
 app.use('/like', likeRouter);
 app.use('/conv', convRouter);
+app.use('/connection', connectionRouter);
 
 
 app.get('/', function (req, res) {
@@ -25,8 +27,8 @@ app.get('/', function (req, res) {
 
 app.get('/cookieStatus', (req, res) => {
     res.set('Content-Type', 'application/json');
-    const id = req.session.requesterId != undefined ? req.session.requesterId : -1;
-    res.send({status: id});
+    const id = req.session.requesterId !== undefined ? req.session.requesterId : -1;
+    res.send({'id': id});
 });
 
 app.listen(8080, console.log('The server successfully launched and listens to port 8080.'));

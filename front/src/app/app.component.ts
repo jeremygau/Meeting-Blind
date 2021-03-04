@@ -32,13 +32,21 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   disconnect(): void {
-    const isDisconnected = this.authService.disconnectUser();
-    if (isDisconnected) {
-      this.router.navigate(['']);
-    }
-    else {
-      alert('Un problème est survenu lors de la tentative de déconnexion, veuillez réessayer.');
-    }
+    this.authService.disconnectUser().subscribe(
+      (response: any) => {
+        if (response.status === 200) {
+          this.authService.setIsConnected(false);
+          this.router.navigate(['']);
+          return;
+        } else {
+          alert('Un problème est survenu lors de la tentative de déconnexion, veuillez réessayer.');
+        }
+      },
+      (error: any) => {
+        console.log(error);
+        alert('Un problème est survenu lors de la tentative de déconnexion, veuillez réessayer.');
+      }
+    );
   }
 
   ngOnDestroy(): void {
