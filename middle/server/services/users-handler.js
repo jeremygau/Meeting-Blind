@@ -5,13 +5,20 @@ async function create(req, res) {
     res.set('Content-Type', 'application/json');
     try {
         const userBool = await userExist(req.body.email);
+        // console.log(userBool);
         if (userBool) {
             res.send({});
         } else {
             let newId = 0;
             let result = await usersRep.getAll();
-            if (result.body.hits.total.value !== null) {
-                newId = result.body.hits.total.value + 1;
+            console.log(result);
+            let nbUsers = result.body.hits.total.value;
+            // console.log(nbUsers);
+            if (nbUsers !== 0) {
+                // console.log(result.body.hits.hits);
+                // console.log(result.body.hits.hits[nbUsers - 1]);
+                newId = result.body.hits.hits[nbUsers - 1]._source.id + 1;
+                // console.log('newId', newId);
             }
             req.session.requesterId = newId;
             req.body.id = newId;

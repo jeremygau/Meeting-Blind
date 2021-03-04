@@ -11,29 +11,28 @@ export class UserViewComponent implements OnInit {
 
   userId!: number;
   user!: User;
-  // user: User = {
-  //   id: 0,
-  //   email: 'hello@hello',
-  //   password: 'aaa',
-  //   firstName: 'Jérémy',
-  //   city: 'Marseille',
-  //   gender: 'homme',
-  //   description: '',
-  //   desiredGender: 'femmes',
-  //   likedUsers: [],
-  //   likedBy: []
-  // };
 
   constructor(private httpService: HttpService) {
   }
 
   ngOnInit(): void {
     this.userId = 1; // todo: changer en fonction du cookie
-    this.httpService.getUser(this.userId).subscribe(
-      (user: User) => {
-        console.log(user);
-        this.user = user;
-      });
+    this.httpService.getRequesterId().subscribe(
+      (user1) => {
+        console.log('user1', user1);
+        this.userId = user1.id;
+      },
+    (e) => {
+      console.log(e);
+      },
+      () => {
+        this.httpService.getUser(this.userId).subscribe(
+          (user: User) => {
+            // console.log(user);
+            this.user = user;
+          });
+      }
+      );
   }
 
 
