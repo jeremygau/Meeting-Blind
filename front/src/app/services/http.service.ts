@@ -33,6 +33,14 @@ export class HttpService {
     return this.http.post<User>(this.serverUrl + 'users', user, {headers: this.headers});
   }
 
+  public deleteUser(id: number): Observable<any> {
+    return this.http.delete(this.serverUrl + 'users/' + id, {observe: 'response'});
+  }
+
+  public updateUser(user: User): Observable<any> {
+    return this.http.put<User>(this.serverUrl + 'users', user, {headers: this.headers});
+  }
+
   public like(idLiked: number): Observable<any> {
     return this.http.put(this.serverUrl + 'like/', {id: idLiked.toString()});
   }
@@ -88,6 +96,4 @@ export class HttpService {
       }
     );
   }
-
-
 }

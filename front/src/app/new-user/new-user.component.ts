@@ -34,36 +34,15 @@ export class NewUserComponent implements OnInit {
 
   onSubmitForm(): void {
     const formValue = this.userForm.value;
-    let gender = 'homme';
-    switch (formValue.gender) {
-      case 1:
-        gender = 'homme';
-        break;
-      case 2:
-        gender = 'femme';
-        break;
-    }
-    let desiredGender = 'homme';
-    switch (formValue.desiredGender) {
-      case 1:
-        desiredGender = 'homme';
-        break;
-      case 2:
-        desiredGender = 'femme';
-        break;
-      case 3:
-        desiredGender = 'homme/femme';
-        break;
-    }
     const newUser = new User(
       0,
       formValue.email,
       formValue.password,
       formValue.firstName,
       formValue.city,
-      gender,
+      formValue.gender,
       formValue.description,
-      desiredGender,
+      formValue.desiredGender,
       [],
       []
     );

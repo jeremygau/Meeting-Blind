@@ -9,4 +9,6 @@ usersRouter.post('/', asyncHandler(usersHandler.create));
 
 usersRouter.get('/:id', asyncHandler(usersHandler.getUserById));
 
+usersRouter.put('/',asyncHandler(usersHandler.userUpdate));
+
 export default usersRouter;

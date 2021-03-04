@@ -1,0 +1,45 @@
+<div>
+  <form (ngSubmit)="onSubmit()" #formUser="ngForm">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="email" [(ngModel)]="email" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Mot de passe</label>
+      <input type="password" class="form-control" id="password" name="password" [(ngModel)]="password" required>
+    </div>
+    <div class="mb-3">
+      <label for="firstName" class="form-label">Prénom</label>
+      <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="firstname" required>
+    </div>
+    <div class="mb-3">
+      <label for="city" class="form-label">Ville</label>
+      <input type="text" class="form-control" id="city" name="city" [(ngModel)]="city" required>
+    </div>
+    <div class="mb-3">
+      <label for="gender" class="form-label">Genre </label>
+      <select class="form-select" aria-label="gender" id="gender" name="gender" [(ngModel)]="gender" required>
+        <option value="homme">Homme</option>
+        <option value="femme">Femme</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" rows="3" name="description" [(ngModel)]="description"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="desiredGender" class="form-label">Je recherche </label>
+      <select class="form-select" aria-label="desiredGender" id="desiredGender" name="desiredGender" [(ngModel)]="desiredGender" required>
+        <option value="homme">des hommes</option>
+        <option value="femme">des femmes</option>
+        <option value="homme/femme">les deux</option>
+      </select>
+    </div>
+    <div>
+      <a class="btn btn-danger" routerLink="..">Annuler</a>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary" [disabled]="formUser.invalid">Modifier</button>
+    </div>
+  </form>
+</div>

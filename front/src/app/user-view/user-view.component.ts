@@ -9,24 +9,23 @@ import { HttpService } from '../services/http.service';
 })
 export class UserViewComponent implements OnInit {
 
-  userId!: number;
   user!: User;
 
   constructor(private httpService: HttpService) {
   }
 
   ngOnInit(): void {
-    this.userId = 1; // todo: changer en fonction du cookie
+    let userId = 1;
     this.httpService.getRequesterId().subscribe(
       (user1) => {
         console.log('user1', user1);
-        this.userId = user1.id;
+        userId = user1.id;
       },
     (e) => {
       console.log(e);
       },
       () => {
-        this.httpService.getUser(this.userId).subscribe(
+        this.httpService.getUser(userId).subscribe(
           (user: User) => {
             // console.log(user);
             this.user = user;

@@ -100,5 +100,8 @@ const getUsersForCity = (city, desiredGender, requesterGender) => {
     })
 };
 
+const deleteUser = (user) => {
+    return deleteUserById(user.id);
+};
 
-export default {getUser, store, getAll, getUsersForCity, getUserById, removeUserById: deleteUserById};
+export default {getUser, store, getAll, getUsersForCity, getUserById, removeUserById: deleteUserById, deleteUser};

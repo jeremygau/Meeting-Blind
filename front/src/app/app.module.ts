@@ -11,6 +11,7 @@ import { NotificationsService } from './services/notifications.service';
 import { UserConnectionComponent } from './user-connection/user-connection.component';
 import {AuthService} from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
+import { UserEditComponent } from './user-edit/user-edit.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AuthGuard } from './services/auth-guard.service';
     routedComponents,
     UsersComponent,
     UserConnectionComponent,
+    UserEditComponent,
   ],
   imports: [
     BrowserModule,

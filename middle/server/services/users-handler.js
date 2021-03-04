@@ -160,4 +160,16 @@ function addFromArray(array, item) {
     array.push(item);
 }
 
-export default {create, userExist, getUserById, addLike, removeLike, likeEachOther, getUserByIdGeneric, getUsersFromTown};
+async function userUpdate(req, res) {
+    res.set('Content-Type', 'application/json');
+    try {
+        await usersRep.deleteUser(req.body);
+        await usersRep.store(req.body)
+        res.send({});
+    } catch (e) {
+        console.log('error here', e)
+        res.status(400).end();
+    }
+}
+
+export default {create, userExist, userUpdate, getUserById, addLike, removeLike, likeEachOther, getUserByIdGeneric, getUsersFromTown};
