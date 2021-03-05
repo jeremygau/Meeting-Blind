@@ -7,7 +7,7 @@
         <img *ngIf="hasNewMessages" src="app/resources/heart.png" alt="" />
         </a>
       </li>
-      <li routerLinkActive="active"><a routerLink="inscription" class="btn">Inscription</a></li>
+      <li *ngIf="!isConnected" routerLinkActive="active"><a routerLink="inscription" class="btn">Inscription</a></li>
       <li *ngIf="!isConnected" routerLinkActive="active"><a routerLink="login" class="btn">Se Connecter</a></li>
       <li *ngIf="isConnected"><button (click)="disconnect()" class="btn">Se Deconnecter</button></li>
     </ul>
