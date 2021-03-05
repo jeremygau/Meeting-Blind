@@ -172,4 +172,20 @@ async function userUpdate(req, res) {
     }
 }
 
-export default {create, userExist, userUpdate, getUserById, addLike, removeLike, likeEachOther, getUserByIdGeneric, getUsersFromTown};
+async function deleteUser(req, res) {
+    res.set('Content-Type', 'application/json');
+    try {
+        let result = await usersRep.removeUserById(req.params.id);
+        console.log(result);
+        if (result.body.deleted === 1) {
+            console.log('ok deletion');
+            res.send({delete: 'ok'});
+        } else {
+            res.send({});
+        }
+    }catch (error) {
+        res.status(400).end();
+    }
+}
+
+export default {create, userExist, userUpdate, deleteUser, getUserById, addLike, removeLike, likeEachOther, getUserByIdGeneric, getUsersFromTown};

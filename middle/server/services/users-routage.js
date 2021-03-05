@@ -11,4 +11,6 @@ usersRouter.get('/:id', asyncHandler(usersHandler.getUserById));
 
 usersRouter.put('/',asyncHandler(usersHandler.userUpdate));
 
+usersRouter.delete('/:id', asyncHandler(usersHandler.deleteUser));
+
 export default usersRouter;

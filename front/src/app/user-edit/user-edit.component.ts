@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {NgForm} from '@angular/forms';
 import {User} from '../models/user.model';
 import {HttpService} from '../services/http.service';
 import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -20,7 +20,8 @@ export class UserEditComponent implements OnInit {
   description!: string;
   desiredGender!: string;
 
-  constructor(private httpService: HttpService, private router: Router) { }
+  constructor(private httpService: HttpService, private router: Router, private authService: AuthService) {
+  }
 
   ngOnInit(): void {
     let userId = 1;
@@ -64,4 +65,25 @@ export class UserEditComponent implements OnInit {
     );
   }
 
+  deleteUser(): void {
+    if (confirm('Etes-vous sûr de vouloir supprimer votre compte ?')) {
+      this.httpService.deleteUser(this.user.id).subscribe(
+        (res) => {
+          if (res.body.delete === 'ok') {
+            alert('Compte bien supprimé');
+            this.authService.disconnectUser().subscribe(
+              (response: any) => {
+                if (response.status === 200) {
+                  this.authService.setIsConnected(false);
+                  this.router.navigate(['']);
+                  return;
+                } else {
+                  alert('Un problème est survenu lors de la tentative de déconnexion, veuillez réessayer.');
+                }
+              }
+            );
+          }
+        });
+    }
+  }
 }
