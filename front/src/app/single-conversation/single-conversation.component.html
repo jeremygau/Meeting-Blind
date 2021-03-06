@@ -3,7 +3,7 @@
     <p [ngStyle]="{color: getNameColor(message)}">
       <a routerLink="/users/[message.sender]">{{getSenderName(message)}} :</a>
       <button *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
-        <img src="app/resources/trash-can-.jpg" title="Supprimer le message" alt="Supprimer le message"/>
+        <img src="../resources/trash-can-.jpg" title="Supprimer le message" alt="Supprimer le message"/>
       </button>
     </p>
     <p>{{message.content}}</p>

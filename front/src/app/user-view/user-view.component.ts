@@ -29,8 +29,8 @@ export class UserViewComponent implements OnInit {
           (user: User) => {
             // console.log(user);
             this.user = user;
-            user.likedBy = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]; // TODO: delete ca
-            user.likedUsers = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3];
+            // user.likedBy = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]; // TODO: delete ca
+            // user.likedUsers = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3];
           });
       }
       );
