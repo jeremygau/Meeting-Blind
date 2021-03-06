@@ -12,7 +12,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import {UserEditComponent} from './user-edit/user-edit.component';
 
 const routes: Routes = [
-  {path: '', component: DateSeekerComponent},
+  {path: '', component: UserViewComponent},
   {path: 'inscription', component: NewUserComponent},
   {path: 'search', canActivate: [AuthGuard], component: DateSeekerComponent},
   {path: 'users/:id', canActivate: [AuthGuard], component: SingleUserComponent},

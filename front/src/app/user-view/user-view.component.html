@@ -1,31 +1,47 @@
 <div class="container bg-light" *ngIf="user !== undefined">
-  <div class="row text-center ">
-    <div class="col">
-      <small>Mail :</small><br>
-      <p>{{user.email}}</p>
+  <div class="row">
+    <div class="col-6 text-center border border-success">
+      <div class="row">
+        <strong>Mail : </strong>
+        <p>{{user.email}}</p>
+      </div>
+      <div class="row">
+        <strong>Nom complet : </strong>
+        <p>{{user.firstName}}</p>
+      </div>
+      <div class="row">
+        <strong>Ville : </strong>
+        <p>{{user.city}}</p>
+      </div>
+      <div class="row">
+        <strong>Genre : </strong>
+        <p>{{user.gender}}</p>
+      </div>
+      <div class="row">
+        <strong>Genre recherché : </strong>
+        <p>{{user.desiredGender}}</p>
+      </div>
+      <div class="row">
+        <strong>Description : </strong>
+        <p>{{user.description}}</p>
+      </div>
+      <div class="row">
+        <a routerLink="editProfile" class="btn btn-block btn-outline-dark">Modifier</a>
+      </div>
     </div>
-    <div class="col">
-      <small>Nom complet :</small><br>
-      <p>{{user.firstName}}</p>
-    </div>
-    <div class="col">
-      <small>Ville :</small><br>
-      <p>{{user.city}}</p>
-    </div>
-    <div class="col">
-      <small>Genre :</small><br>
-      <p>{{user.gender}}</p>
-    </div>
-    <div class="col">
-      <small>Genre recherché :</small><br>
-      <p>{{user.desiredGender}}</p>
-    </div>
-    <div class="col">
-      <small>Description :</small><br>
-      <p>{{user.description}}</p>
-    </div>
-    <div class="col">
-      <a routerLink="editProfile" class="btn btn-block btn-outline-dark">Modifier</a>
+    <div class="col-6 border border-danger">
+      <div class="row bg-warning">
+        <div class="col">
+          <p *ngIf="user.likedBy.length == 0">Bah alors personne veut de vous ou quoi ?</p>
+          <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
+        </div>
+      </div>
+      <div class="row bg-info">
+        <div class="col">
+          <p *ngIf="user.likedUsers.length == 0">Vous etes difficile on dirai !</p>
+          <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
+        </div>
+      </div>
     </div>
   </div>
 </div>
