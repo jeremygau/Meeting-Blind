@@ -1,6 +1,6 @@
 <div class="container bg-light" *ngIf="user !== undefined">
   <div class="row">
-    <div class="col-6 text-center border border-success">
+    <div class="col-6 text-center border border-success border-4">
       <div class="row">
         <strong>Mail : </strong>
         <p>{{user.email}}</p>
@@ -29,15 +29,17 @@
         <a routerLink="editProfile" class="btn btn-block btn-outline-dark">Modifier</a>
       </div>
     </div>
-    <div class="col-6 border border-danger">
+    <div class="col-6 border border-danger border-4">
       <div class="row bg-warning">
-        <div class="col">
+        <strong>Tes admirateurs</strong>
+        <div class="col like overflow-auto">
           <p *ngIf="user.likedBy.length == 0">Bah alors personne veut de vous ou quoi ?</p>
           <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
         </div>
       </div>
       <div class="row bg-info">
-        <div class="col">
+        <strong>Tes crush</strong>
+        <div class="col like overflow-auto">
           <p *ngIf="user.likedUsers.length == 0">Vous etes difficile on dirai !</p>
           <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
         </div>
