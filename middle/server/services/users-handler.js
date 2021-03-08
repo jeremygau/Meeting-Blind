@@ -1,6 +1,7 @@
 import usersRep from './users-repository';
 import conversationsHandler from './conversations-handler';
 
+
 async function create(req, res) {
     res.set('Content-Type', 'application/json');
     try {
@@ -44,93 +45,111 @@ async function getUserById(req, res) {
     res.set('Content-Type', 'application/json');
     try {
         const user = await getUserByIdGeneric(req.params.id);
-        if(user === null) {
+        if (user === null) {
             res.send({});
         } else {
             res.send(user);
         }
-    }catch (error) {
+    } catch (error) {
         res.status(400).end();
     }
 }
 
 async function getUserByIdGeneric(userId) {
-    try {
-        const result = await usersRep.getUserById(userId);
-        if (result.body.hits.total.value === 0) {
-            return null;
-        }
-        return result.body.hits.hits[0]._source;
-    }catch (error) {
-        res.status(400).end();
+    const result = await usersRep.getUserById(userId);
+    if (result.body.hits.total.value === 0) {
+        return null;
     }
+    return result.body.hits.hits[0]._source;
 }
 
 async function likeEachOther(user1Id, user2Id) {
     let result = await usersRep.getUserById(user1Id);
-    if(result.body.hits.total.value === 0) {
+    if (result.body.hits.total.value === 0) {
         return false;
     }
     let user = result.body.hits.hits[0]._source;
     return (user.likedUsers.includes(user2Id) && user.likedBy.includes(user2Id));
 }
 
+
+const addToArray = function addToArray(array, item) {
+    array.push(item);
+}
+
 async function addLike(req, res) {
     res.set('Content-Type', 'application/json');
-    let requesterId = req.session.requesterId;
-    let likedUserId = req.body.id;
-    await updateLike(requesterId, likedUserId, addFromArray, res);
-    if(await likeEachOther(requesterId, likedUserId)) {
-        let created = await conversationsHandler.createConversation(likedUserId, requesterId);
-        if(! created) res.send({status: 'conversation not created'});
+    try {
+        let response = {result: ''};
+        let requester = await getUserByIdGeneric(req.session.requesterId);
+        if (requester === null) {
+            response.result = 'requester unknown';
+            res.send(response)
+        }
+        let likedUser = await getUserByIdGeneric(req.body.id);
+        if (likedUser === null) {
+            response.result = 'liked user unknown';
+            res.send(response)
+        }
+
+        addToArray(requester.likedUsers, likedUser.id);
+        await updateUserGeneric(requester);
+
+        addToArray(likedUser.likedBy, requester.id);
+        await updateUserGeneric(likedUser);
+
+        if (await likeEachOther(requester.id, likedUser.id)) {
+            let created = await conversationsHandler.createConversation(likedUser.id, requester.id);
+            if (!created) {
+                response.result = 'conversation not created';
+                res.send(response);
+            }
+        }
+        response.result = 'ok';
+        res.send(response);
+    } catch (e) {
+        console.log(e);
+        res.status(400).end();
     }
-    res.send({status: 'ok'});
+}
+
+const removeFromArray = function removeFromArray(array, item) {
+    let index = array.indexOf(item);
+    if (index > 1)
+        array.remove(index);
 }
 
 async function removeLike(req, res) {
-    res.set('Content-Type', 'application/json');
-    let requesterId = req.session.requesterId;
-    let likedUserId = req.params.id;
-    await updateLike(requesterId, likedUserId, removeFromArray, res);
-    await conversationsHandler.blockConversation(requesterId, likedUserId);
-    res.send({status: 'ok'});
-}
-
-
-async function updateLike(requesterId, likedUserId, updateArrayFunction, res) {
-    await updateLikeForRequester(requesterId, likedUserId, updateArrayFunction, res);
-    await updateLikeForLikedUser(requesterId, likedUserId, updateArrayFunction, res);
-}
-
-async function updateLikeForRequester(requesterId, likedUserId, updateArrayFunction, res) {
     try {
-        let result = await usersRep.getUserById(requesterId);
-        if (result.body.hits.total.value === 0) {
-            res.send({status: 'requester unknown'});
+        res.set('Content-Type', 'application/json');
+        let response = {result: ''};
+        let requester = await getUserByIdGeneric(req.session.requesterId);
+        if (requester === null) {
+            response.result = 'requester unknown';
+            res.send(response)
         }
-        let requester = result.body.hits.hits[0]._source;
-        updateArrayFunction(requester.likedUsers, likedUserId);
-        await usersRep.removeUserById(requesterId);
-        await usersRep.store(requester);
-    }catch (e) {
+        let likedUser = await getUserByIdGeneric(req.params.id);
+        if (likedUser === null) {
+            response.result = 'liked user unknown';
+            res.send(response)
+        }
+
+        removeFromArray(requester.likedUsers, likedUser.id);
+        await updateUserGeneric(requester);
+
+        removeFromArray(likedUser.likedBy, requester.id);
+        await updateUserGeneric(likedUser);
+
+        await conversationsHandler.blockConversation(requester.id, likedUser.id);
+        response.result = 'ok';
+        res.send(response);
+    } catch (e) {
+        console.log(e);
         res.status(400).end();
     }
+
 }
 
-async function updateLikeForLikedUser(requesterId, likedUserId, updateArrayFunction, res) {
-    try {
-        let result = await usersRep.getUserById(likedUserId);
-        if (result.body.hits.total.value === 0) {
-            res.send({status: 'user unknown'});
-        }
-        let likedUser = result.body.hits.hits[0]._source;
-        updateArrayFunction(likedUser.likedBy, requesterId);
-        await usersRep.removeUserById(likedUserId);
-        await usersRep.store(likedUser);
-    }catch (e) {
-        res.status(400).end();
-    }
-}
 
 async function getUsersFromTown(req, res) {
     try {
@@ -145,26 +164,15 @@ async function getUsersFromTown(req, res) {
             users.push(obj._source);
         }
         res.send(users);
-    }catch(error) {
+    } catch (error) {
         res.status(400).end();
     }
 }
 
-function removeFromArray(array, item) {
-    let index = array.indexOf(item);
-    if (index > 1)
-        array.remove(index);
-}
-
-function addFromArray(array, item) {
-    array.push(item);
-}
-
-async function userUpdate(req, res) {
+async function updateUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
-        await usersRep.deleteUser(req.body);
-        await usersRep.store(req.body)
+        await updateUserGeneric(req.body.user);
         res.send({});
     } catch (e) {
         console.log('error here', e)
@@ -172,10 +180,15 @@ async function userUpdate(req, res) {
     }
 }
 
+async function updateUserGeneric(user) {
+    await usersRep.deleteUserById(user.id);
+    await usersRep.store(user);
+}
+
 async function deleteUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
-        let result = await usersRep.removeUserById(req.params.id);
+        let result = await usersRep.deleteUserById(req.params.id);
         console.log(result);
         if (result.body.deleted === 1) {
             console.log('ok deletion');
@@ -183,9 +196,22 @@ async function deleteUser(req, res) {
         } else {
             res.send({});
         }
-    }catch (error) {
+    } catch (error) {
         res.status(400).end();
     }
 }
 
-export default {create, userExist, userUpdate, deleteUser, getUserById, addLike, removeLike, likeEachOther, getUserByIdGeneric, getUsersFromTown};
+export default {
+    create,
+    userExist,
+    updateUser,
+    deleteUser,
+    getUserById,
+    addLike,
+    removeLike,
+    likeEachOther,
+    getUserByIdGeneric,
+    getUsersFromTown
+};
+
+

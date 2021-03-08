@@ -14,13 +14,19 @@ export class ConversationsComponent implements OnInit {
   constructor(private httpService: HttpService) { }
 
   ngOnInit(): void {
-    this.requesterId = 0; // TODO trouver le requesterId par requête serveur ou accès token
     this.httpService.getConversations().subscribe(
       (conversations: Conversation[]) => {
         this.conversations = conversations;
       },
       () => {
         alert('une erreur a eu lieu, veuillez réessayer plus tard. Si le problème persiste, contactez un administrateur');
+      },
+      () => {
+        this.httpService.getRequesterId().subscribe(
+          (response: {id: number}) => {
+            this.requesterId = response.id;
+          }
+        );
       }
     );
   }

@@ -13,62 +13,72 @@ export class SingleUserComponent implements OnInit {
   isLikedByRequester = false;
   likedRequester = false;
   requesterId!: number;
+  genericErrorMessage = 'Une erreur est survenue, veuillez réessayer. Si l\'erreur persiste, contactez un administrateur';
 
   constructor(private httpService: HttpService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    this.requesterId = 0; // TODO récupérer l'id, soit via token, soit via requête serveur si token non accessible.
-    this.httpService.getUser(this.route.snapshot.params.id).subscribe(
-      (user: User) => {
-        this.user = user;
-        this.isLikedByRequester = user.likedBy.includes(this.requesterId);
-        this.likedRequester = user.likedUsers.includes(this.requesterId);
-      });
+    this.httpService.getRequesterId().subscribe(
+      (response: { id: number }) => {
+        this.requesterId = response.id;
+      },
+      () => {
+        alert(this.genericErrorMessage);
+      },
+      () => {
+        this.httpService.getUser(this.route.snapshot.params.id).subscribe(
+          (user: User) => {
+            this.user = user;
+            this.isLikedByRequester = user.likedBy.includes(this.requesterId);
+            this.likedRequester = user.likedUsers.includes(this.requesterId);
+          });
+      }
+    );
   }
 
   like(): void {
     this.httpService.like(this.user.id).subscribe(
-      (response: any) => {
-        if (!response) {
-          alert('Une erreur est survenue. Veuillez réessayer. Si l\'erreur persiste, contactez un administrateur');
-        }
-        if (response.status === 'ok') {
-          this.isLikedByRequester = true;
-        }
-        else if (response.status === 'requester unknown') {
-          this.router.navigate(['login']); // TODO vérifier que la route est bien correcte quand elle sera implémentée
-        } else if (response.status === 'user unknown') {
-          alert('L\'utilisateur n\'existe pas ou plus.');
-        } else if (response.status === 'conversation not created') {
-          alert('Une erreur interne au serveur est survenue : contactez un administrateur pour pouvoir démarrer une' +
-            ' conversation');
-        }
+      (response: {result: string}) => {
+        this.handleLikeAnswer(response);
       },
       () => {
-        alert('Une erreur est survenue, veuillez réessayer. Si l\'erreur persiste, contactez un administrateur');
+        alert(this.genericErrorMessage);
       }
     );
   }
 
   dislike(): void {
     this.httpService.dislike(this.user.id).subscribe(
-      (response: any) => {
-        if (!response) {
-          alert('Une erreur est survenue. Veuillez réessayer. Si l\'erreur persiste, contactez un administrateur');
-        }
-        if (response.status === 'ok') {
-          this.isLikedByRequester = false;
-        }
-        else if (response.status === 'requester unknown') {
-          this.router.navigate(['login']); // TODO vérifier que la route est bien correcte quand elle sera implémentée
-        } else if (response.status === 'user unknown') {
-          alert('L\'utilisateur n\'existe pas ou plus.');
-        }
+      (response: {result: string}) => {
+        this.handleLikeAnswer(response);
       },
       () => {
-        alert('Une erreur est survenue, veuillez réessayer. Si l\'erreur persiste, contactez un administrateur');
+        alert(this.genericErrorMessage);
       }
     );
+  }
+
+  private handleLikeAnswer(response: {result: string}): void {
+    if (!response) {
+      alert(this.genericErrorMessage);
+      return;
+    }
+    switch (response.result) {
+      case 'ok':
+        this.isLikedByRequester = ! this.isLikedByRequester;
+        break;
+      case 'requester unknown' :
+        this.router.navigate(['login']);
+        break;
+      case 'user unknown' :
+        alert('L\'utilisateur n\'existe pas ou plus.');
+        break;
+      case 'conversation not created' :
+        alert('Votre conversation n\'a pas pu etre créée. Contactez un administrateur');
+        break;
+      default:
+        alert(this.genericErrorMessage);
+    }
   }
 
 }

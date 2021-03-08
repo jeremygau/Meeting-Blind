@@ -9,6 +9,8 @@ export class UsersComponent implements OnInit {
 
   @Input() firstName!: string;
   @Input() id!: number;
+  @Input() desiredGender!: string;
+
   constructor() { }
 
   ngOnInit(): void {

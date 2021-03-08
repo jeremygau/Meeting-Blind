@@ -1,19 +1,16 @@
 
-<!-- TODO mettre retour à la liste : récupérer la ville ? -->
-
 <h2>{{user.firstName}}</h2>
-<p *ngIf="user.description && user.description.length > 0">{{user.description}}</p>
+<p *ngIf="user.description && user.description.length > 0">Description : {{user.description}}</p>
 <p>Genre : {{user.gender}}</p>
 <p>Recherche : {{user.desiredGender}}</p>
 <button class="btn btn-sm btn-success"
         *ngIf="isLikedByRequester"
-        (click)="like()">Liked
+        (click)="dislike()">Liked
 </button>
 <button class="btn btn-sm btn-success"
         *ngIf="!isLikedByRequester"
-        (click)="dislike()">like
+        (click)="like()">like
 </button>
-<button class="btn btn-sm btn-success"
-        *ngIf="isLikedByRequester && likedRequester"
-        (click)="dislike()">Voir la conversation <!-- TODO adapter ça pour renvoyer vers route qui donnera la conversation -->
-</button>
+<a [routerLink]="['/conv', user.id]"
+        *ngIf="isLikedByRequester && likedRequester">Voir la conversation
+</a>

@@ -12,19 +12,25 @@ import { NgForm } from '@angular/forms';
 })
 export class SingleConversationComponent implements OnInit {
   conversation!: Conversation;
-  requesterId = this.conversation.user1.id;
+  requesterId !: number;
   systemMessage = 'Cette conversation est désactivée car l\'un de vous a unlike l\'autre. Vous ne pouvez plus envoyer de message';
 
   constructor(private httpService: HttpService, private route: ActivatedRoute, private router: Router) { }
 
+  // TODO faire en sorte que le lien du nom de l'envoyeur n'apparaisse pas comme un lien
   ngOnInit(): void {
     const userId = this.route.snapshot.params.id;
+    console.log('snapshot id : ' + userId);
     this.httpService.getConversation(userId).subscribe(
-      (conversation: Conversation) => {
-        this.conversation = conversation;
+      (conv: Conversation) => {
+        console.log('conversation : ' + conv);
+        this.conversation = conv;
       },
       () => {
         this.sendErrorAlert();
+      },
+      () => {
+        this.requesterId = this.conversation.user1.id;
       }
     );
   }

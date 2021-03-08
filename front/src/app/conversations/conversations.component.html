@@ -3,7 +3,7 @@
   <li class="list-group-item" *ngFor="let conv of conversations">
     <h3>{{conv.user2.firstName}}</h3>
     <p *ngIf="conv.messages.length > 0">{{conv.messages[0].sender}} :{{conv.messages[0].content}}</p>
-    <a [routerLink]="[conv.user2.id]">Voir la conversation</a>
+    <a [routerLink]="['/conv', conv.user2.id]">Voir la conversation</a>
   </li>
 </ul>
 

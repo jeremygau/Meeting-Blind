@@ -54,8 +54,9 @@ export class HttpService {
     return this.http.get<Conversation[]>(this.serverUrl + 'conv/');
   }
 
-  public getConversation(userId: number): Observable<any> {
-    const observable = this.http.get(this.serverUrl + 'conv/' + userId.toString());
+  public getConversation(userId: number): Observable<Conversation> {
+    console.log('passed here with id ' + userId);
+    const observable = this.http.get<Conversation>(this.serverUrl + 'conv/' + userId.toString());
     this.checkForNewMessages();
     return observable;
   }

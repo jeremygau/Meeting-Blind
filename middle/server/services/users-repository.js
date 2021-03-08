@@ -142,4 +142,4 @@ const updateUser = (user) => {
         })
 }
 
-export default {getUser, store, getAll, getUsersForCity, getUserById, removeUserById: deleteUserById, deleteUser};
+export default {getUser, store, getAll, getUsersForCity, getUserById, deleteUserById, deleteUser};

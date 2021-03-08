@@ -44,11 +44,15 @@ function markAsReadIfValid(conversation, requesterId) {
 async function getConversation(req, res) {
     try {
         res.set('Content-Type', 'application/json');
+        console.log('got to get Conversation');
         let requesterId = req.session.requesterId;
         let userId = req.params.id;
+        console.log('id for conv : ' + userId);
         let conv = await getConversationGeneric(userId, requesterId);
+        console.log('got to conv without conv');
         if (conv === null) res.status(403).end();
         markAsReadIfValid(conv, requesterId);
+        console.log('got to end of Conversation');
         res.send(conv)
     } catch (error) {
         res.status(400).end();
@@ -115,10 +119,12 @@ function getLastMessage(conversation) {
 async function addMessage(req, res) {
     try {
         let requesterId = req.session.requesterId;
+        console.log('passed in addMessage');
         let userId = req.body.id;
         let message = req.body.message;
 
         let conv = await getConversationGeneric(userId);
+        console.log('passed after getConversation addMessage');
         if (conv === null) res.status(404).end();
         message.id = conv.messages.length === 0 ? 0 : conv.messages[conv.messages.length - 1] + 1;
         conv.messages.push(message);
