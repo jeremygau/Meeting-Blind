@@ -1,8 +1,10 @@
-<a [routerLink]="['/users', user.id]" class="row p-3 bg-danger bg-gradient text-white text-decoration-none" *ngIf="user !== undefined">
-  <div class="col">
-    <p>{{user.firstName}}</p>
-  </div>
-  <div class="col">
-    <p>{{user.city}}</p>
+<a [routerLink]="['/users', user.id]" class="list-group-item list-group-item-action p-3 bg-info bg-gradient text-decoration-none" *ngIf="user !== undefined">
+  <div class="row text-center">
+    <div class="col">
+      <p class="mb-0">{{user.firstName}}</p>
+    </div>
+    <div class="col">
+      <p class="mb-0">{{user.city}}</p>
+    </div>
   </div>
 </a>

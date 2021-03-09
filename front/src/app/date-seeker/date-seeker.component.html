@@ -1,26 +1,25 @@
-<div class="row">
-  <div class="col-sm-8 col-sm-offset-2">
-    <form (ngSubmit)="onSubmit(formCity)" #formCity="ngForm">
-      <div class="form-group">
-        <label for="city">Ville où vous souhaitez des rencontres</label>
-        <input type="text" id="city" class="form-control" name="city" minlength="1" [value]="searchQuery" ngModel required>
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="formCity.invalid">Chercher</button>
+<div class="row mt-5">
+  <div class="col">
+    <form (ngSubmit)="onSubmit(formCity)" #formCity="ngForm" class="row">
+        <div class="col">
+          <input type="text" id="city" class="form-control" name="city" minlength="1" [value]="searchQuery" placeholder="Ville où vous souhaitez faire des rencontres" ngModel required>
+        </div>
+        <div class="col">
+          <button class="btn btn-primary" type="submit" [disabled]="formCity.invalid">Chercher</button>
+        </div>
     </form>
   </div>
 </div>
-<div class="container">
+<div class="mt-5">
   <div class="row">
     <p *ngIf="usersInCity && usersInCity.length === 0">Il n'y a aucun résultat pour cette recherche. Peut-être dans une
     ville voisine ?</p>
-    <div class="col-xs-12">
-      <ul class="list-group">
+    <ul class="list-group">
         <app-users *ngFor="let user of usersInCity"
                    [id]="user.id"
                    [firstName] = "user.firstName"
                    [desiredGender]="user.desiredGender">
         </app-users>
       </ul>
-    </div>
   </div>
 </div>
