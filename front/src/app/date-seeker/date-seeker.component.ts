@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { HttpService } from '../services/http.service';
-import { User } from '../models/user.model';
+import {NgForm} from '@angular/forms';
+import {HttpService} from '../services/http.service';
+import {User} from '../models/user.model';
 
 @Component({
   selector: 'app-date-seeker',
@@ -13,7 +13,8 @@ export class DateSeekerComponent implements OnInit {
   searchQuery = '';
 
 
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService) {
+  }
 
   ngOnInit(): void {
   }
@@ -22,8 +23,12 @@ export class DateSeekerComponent implements OnInit {
     const city = form.value.city;
     this.searchQuery = city;
     this.httpService.getUsersForTown(city.toLowerCase()).subscribe(
-      (users: User[]) => { this.usersInCity = users; },
-      (error: any) => { console.log(error); }
+      (users: User[]) => {
+        this.usersInCity = users;
+      },
+      (error: any) => {
+        console.log(error);
+      }
     );
   }
 

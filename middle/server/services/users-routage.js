@@ -9,7 +9,7 @@ usersRouter.post('/', asyncHandler(usersHandler.create));
 
 usersRouter.get('/:id', asyncHandler(usersHandler.getUserById));
 
-usersRouter.put('/',asyncHandler(usersHandler.userUpdate));
+usersRouter.put('/',asyncHandler(usersHandler.updateUser));
 
 usersRouter.delete('/:id', asyncHandler(usersHandler.deleteUser));
 

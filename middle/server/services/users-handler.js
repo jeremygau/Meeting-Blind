@@ -174,7 +174,7 @@ async function getUsersFromTown(req, res) {
 async function updateUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
-        await updateUserGeneric(req.body.user);
+        await updateUserGeneric(req.body);
         res.send({});
     } catch (e) {
         console.log('error here', e)

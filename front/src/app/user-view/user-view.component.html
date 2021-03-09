@@ -1,48 +1,53 @@
-<div class="container bg-light" *ngIf="user !== undefined">
-  <div class="row">
-    <div class="col-6 text-center border border-success border-4">
-      <div class="row">
-        <strong>Mail : </strong>
-        <p>{{user.email}}</p>
-      </div>
-      <div class="row">
-        <strong>Nom complet : </strong>
-        <p>{{user.firstName}}</p>
-      </div>
-      <div class="row">
-        <strong>Ville : </strong>
-        <p>{{user.city}}</p>
-      </div>
-      <div class="row">
-        <strong>Genre : </strong>
-        <p>{{user.gender}}</p>
-      </div>
-      <div class="row">
-        <strong>Genre recherché : </strong>
-        <p>{{user.desiredGender}}</p>
-      </div>
-      <div class="row">
-        <strong>Description : </strong>
-        <p>{{user.description}}</p>
-      </div>
-      <div class="row">
-        <a routerLink="editProfile" class="btn btn-block btn-outline-dark">Modifier</a>
+<div *ngIf="user !== undefined">
+  <div class="text-center bg-cyan rounded-50 shadow-lg float-lg-start p-3">
+    <div class="row">
+      <strong>Mail : </strong>
+      <p>{{user.email}}</p>
+    </div>
+    <div class="row">
+      <strong>Nom complet : </strong>
+      <p>{{user.firstName}}</p>
+    </div>
+    <div class="row">
+      <strong>Ville : </strong>
+      <p>{{user.city}}</p>
+    </div>
+    <div class="row">
+      <strong>Genre : </strong>
+      <p>{{user.gender}}</p>
+    </div>
+    <div class="row">
+      <strong>Genre recherché : </strong>
+      <p>{{user.desiredGender}}</p>
+    </div>
+    <div class="row">
+      <strong>Description : </strong>
+      <p>{{user.description}}</p>
+    </div>
+    <div class="row">
+      <div>
+        <a routerLink="editProfile" class="btn btn-primary text-white">Modifier</a>
       </div>
     </div>
-    <div class="col-6 border border-danger border-4">
-      <div class="row bg-warning">
-        <strong>Tes admirateurs</strong>
-        <div class="col like overflow-auto">
-          <p *ngIf="user.likedBy.length == 0">Bah alors personne veut de vous ou quoi ?</p>
-          <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
-        </div>
+  </div>
+
+  <div class="float-lg-end w-50 p-3">
+    <div class="position-relative">
+    <span class="position-absolute top--3 start--3 bg-white rounded-circle first-plan">
+      <img src="../resources/heart_emoji.svg" alt="Likeurs" width="50" height="50">
+    </span>
+      <div class="list-group like overflow-auto mb-5 bg-cyan shadow-lg rounded-50">
+        <p *ngIf="user.likedBy.length == 0" class="m-3">Bah alors personne veut de vous ou quoi ?</p>
+        <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
       </div>
-      <div class="row bg-info">
-        <strong>Tes crush</strong>
-        <div class="col like overflow-auto">
-          <p *ngIf="user.likedUsers.length == 0">Vous etes difficile on dirai !</p>
-          <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
-        </div>
+    </div>
+    <div class="position-relative">
+    <span class="position-absolute top--3 start--3 first-plan">
+      <img src="../resources/heart.svg" alt="Cruch" width="50" height="50">
+    </span>
+      <div class="list-group like overflow-auto shadow-lg rounded-50 bg-cyan">
+        <p *ngIf="user.likedUsers.length == 0" class="m-3">Vous etes difficile on dirai !</p>
+        <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
       </div>
     </div>
   </div>
