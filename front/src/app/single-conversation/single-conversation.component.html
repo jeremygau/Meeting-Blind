@@ -1,9 +1,60 @@
+<div class="page-content page-container" id="page-content">
+  <div class="padding">
+    <div class="row container d-flex justify-content-center">
+      <div class="card card-bordered">
+        <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
+             style="overflow-y: scroll !important; height:400px !important;">
+          <div *ngFor="let message of conversation?.messages">
+            <div *ngIf="message.sender !== requesterId" class="mb-2 position-relative"><a
+              [routerLink]="['/users', message.sender]">{{getSenderName(message)}} : </a>
+              <div class="bg-grey py-1 px-2 text-body rounded d-inline">
+                {{message.content}}
+              </div>
+            </div>
+            <div *ngIf="message.sender === requesterId" class="mb-2">
+                <button class="btn" *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
+                  <img class="img-fluid" src="../resources/trash.svg" alt=""/>
+                </button>
+                <div class="bg-primary py-1 px-2 text-white rounded d-inline position-absolute end-5">
+                  {{message.content}}
+                </div>
+            </div>
+          </div>
+          <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+            <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+          </div>
+          <div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;">
+            <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;"></div>
+          </div>
+        </div>
+        <p *ngIf="conversation.isBlocked" [ngStyle]="{color: 'red'}"> {{systemMessage}}</p>
+        <div class="publisher bt-1 border-light">
+          <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
+            <input type="text" id="message" placeholder="Ecrivez votre message..." class="form-control" name="message"
+                   minlength="1" [value]="message" ngModel required>
+            <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">
+              Envoyer
+            </button>
+            <button class="btn btn-danger" (click)="deleteConversation()">Supprimer la conversation</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+
+
 <ul>
   <li *ngFor="let message of conversation?.messages">
     <p [ngStyle]="{color: getNameColor(message)}">
       <a [routerLink]="['/users', message.sender]">{{getSenderName(message)}} :</a>
       <button *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
-        <img src="../resources/trash-can-.jpg" title="Supprimer le message" alt="Supprimer le message"/>
+        <img class="img-fluid"
+             src="../resources/trash-can-.jpg"
+             title="Supprimer le message"
+             alt="Supprimer le message" />
       </button>
     </p>
     <p>{{message.content}}</p>
@@ -13,9 +64,9 @@
 <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
   <div class="form-group">
     <label for="message">Message</label>
-    <input type="text" id="message" class="form-control" name="message" minlength="1" ngModel required>
+    <input type="text" id="message" class="form-control" name="message" minlength="1" [value]="message" ngModel required>
   </div>
   <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">Envoyer</button>
 </form>
 <button class="btn btn-danger" (click)="deleteConversation()">Supprimer la conversation</button>
-
+-->

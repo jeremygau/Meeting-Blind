@@ -160,7 +160,12 @@ async function getUsersFromTown(req, res) {
         if (requester === null) {
             res.status(404).end();
         }
-        let result = await usersRep.getUsersForCity(req.params.city, requester.desiredGender, requester.gender);
+        let result;
+        if(requester.desiredGender === 'homme/femme') {
+            result = await usersRep.getAllUsersForCity(req.params.city, requester);
+        } else {
+            result = await usersRep.getSpecificUsersForCity(req.params.city, requester);
+        }
         let users = [];
         for (let obj of result.body.hits.hits) {
             users.push(obj._source);
