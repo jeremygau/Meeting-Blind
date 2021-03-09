@@ -1,17 +1,24 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <li routerLinkActive="active"><a routerLink="search" class="btn btn-outline-info me-2">Faire des rencontres</a></li>
-      <li routerLinkActive="active"><a routerLink="profile" class="btn btn-outline-info me-2">Profil</a></li>
-      <li routerLinkActive="active"><a routerLink="conv" class="btn btn-outline-info me-2 position-relative">Mes Conversations
-        <img *ngIf="hasNewMessages" class="position-absolute top-5 start-90 translate-middle badge-heart p-2" src="./resources/heart.svg" alt=""/>
-        <span *ngIf="hasNewMessages" class="position-absolute top-5 start-90 translate-middle badge-heart p-2 text-white small-font">1</span> <!-- TODO: delete cette ligne si on recup pas le nb de nex msg   -->
-      </a>
-      </li>
-      <li *ngIf="!isConnected" routerLinkActive="active"><a routerLink="inscription" class="btn btn-primary me-2">Inscription</a></li>
-      <li *ngIf="!isConnected" routerLinkActive="active"><a routerLink="login" class="btn btn-info me-2">Se Connecter</a></li>
-      <li *ngIf="isConnected"><button (click)="disconnect()" class="btn btn-info me-2">Se Deconnecter</button></li>
-    </ul>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse d-lg-flex justify-content-lg-between" id="navbarSupportedContent">
+      <div class="navbar-nav">
+        <a routerLink="search" routerLinkActive="active" class="btn btn-outline-info me-2">Faire des rencontres</a>
+        <a routerLink="profile" routerLinkActive="active" class="btn btn-outline-info me-2">Profil</a>
+        <a routerLink="conv" routerLinkActive="active" class="btn btn-outline-info me-2 position-relative">Mes Conversations
+          <img *ngIf="hasNewMessages" class="position-absolute top-5 start-90 translate-middle badge-heart p-2" src="./resources/heart.svg" alt=""/>
+          <span *ngIf="hasNewMessages" class="position-absolute top-5 start-90 translate-middle badge-heart p-2 text-white small-font">1</span> <!-- TODO: delete cette ligne si on recup pas le nb de new msg   -->
+        </a>
+      </div>
+      <div class="navbar-nav">
+        <a *ngIf="!isConnected" routerLinkActive="active" routerLink="inscription" class="btn btn-primary me-2">Inscription</a>
+        <a *ngIf="!isConnected" routerLinkActive="active" routerLink="login" class="btn btn-info me-2">Se Connecter</a>
+        <button (click)="disconnect()" class="btn btn-info me-2" *ngIf="isConnected">Se Deconnecter</button>
+      </div>
+    </div>
   </div>
 </nav>
 <div class="container">
