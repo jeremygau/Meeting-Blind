@@ -1,8 +1,8 @@
-<div class="row p-3 bg-danger bg-gradient text-white" *ngIf="user !== undefined">
+<a [routerLink]="['/users', user.id]" class="row p-3 bg-danger bg-gradient text-white text-decoration-none" *ngIf="user !== undefined">
   <div class="col">
     <p>{{user.firstName}}</p>
   </div>
   <div class="col">
     <p>{{user.city}}</p>
   </div>
-</div>
+</a>
