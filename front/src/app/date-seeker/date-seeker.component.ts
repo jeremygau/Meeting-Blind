@@ -21,7 +21,7 @@ export class DateSeekerComponent implements OnInit {
   onSubmit(form: NgForm): void {
     const city = form.value.city;
     this.searchQuery = city;
-    this.httpService.getUsersForTown(city).subscribe(
+    this.httpService.getUsersForTown(city.toLowerCase()).subscribe(
       (users: User[]) => { this.usersInCity = users; },
       (error: any) => { console.log(error); }
     );

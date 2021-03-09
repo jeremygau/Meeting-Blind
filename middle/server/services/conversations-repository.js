@@ -26,13 +26,15 @@ const createEmptyConversation = (user1Id, user2Id) => {
     });
 };
 
-const store = conversation => esClient.index({
-    index,
-    refresh: 'true',
-    body: conversation,
-}).then(response => response.statusCode).catch((error) => {
-    handleElasticsearchError(error);
-});
+const store = (conversation) => {
+    esClient.index({
+        index,
+        refresh: 'true',
+        body: conversation,
+    }).then(response => response.statusCode).catch((error) => {
+        handleElasticsearchError(error);
+    });
+};
 
 const getConversation = (user1Id, user2Id) => {
     return esClient.search({
@@ -118,4 +120,61 @@ const deleteConversation = (user1Id, user2Id) => {
   });
 };
 
-export default {createEmptyConversation, getConversation, deleteConversation, getAllConversationsFor, store}
+
+const updateConversation = (conv) => {
+    return esClient.update_by_query({
+        index,
+        refresh: true,
+        body: {
+            "query": {
+                "bool": {
+                    "should": [
+                        {"bool": {
+                                "must": [
+                                    {"term": {"user1": conv.user1}},
+                                    {"term": {"user2": conv.user2}}
+                                ]
+                            }
+                        },
+                        {"bool": {
+                                "must": [
+                                    {"term": {"user1": conv.user2}},
+                                    {"term": {"user2": conv.user1}}
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "script": {
+                "source":
+                    "ctx._source.user1 = params.user1; " +
+                    "ctx._source.user2 = params.user2; " +
+                    "ctx._source.messages = params.messages; " +
+                    "ctx._source.isBlocked = params.isBlocked; " +
+                    "ctx._source.hasUnreadMessages = params.hasUnreadMessages; ",
+                "lang": 'painless',
+                params: {
+                    "user1": conv.user1.toString(),
+                    "user2": conv.user2.toString(),
+                    "messages": conv.messages,
+                    "isBlocked": conv.isBlocked,
+                    "hasUnreadMessages": conv.hasUnreadMessages
+                }
+            }
+        }
+    })
+        .then(response => response.statusCode)
+        .catch((error) => {
+            handleElasticsearchError(error);
+        })
+}
+
+export default {
+    createEmptyConversation,
+    getConversation,
+    deleteConversation,
+    getAllConversationsFor,
+    store,
+    updateConversation}
+

@@ -20,10 +20,8 @@ export class SingleConversationComponent implements OnInit {
   // TODO faire en sorte que le lien du nom de l'envoyeur n'apparaisse pas comme un lien
   ngOnInit(): void {
     const userId = this.route.snapshot.params.id;
-    console.log('snapshot id : ' + userId);
     this.httpService.getConversation(userId).subscribe(
       (conv: Conversation) => {
-        console.log('conversation : ' + conv);
         this.conversation = conv;
       },
       () => {
@@ -57,7 +55,7 @@ export class SingleConversationComponent implements OnInit {
 
   onSubmit(form: NgForm): void {
     const message = new Message(0, this.requesterId, this.conversation.user2.id, new Date(), form.value.message);
-    this.httpService.addMessage(this.conversation.user2.id, message).subscribe(
+    this.httpService.addMessage(message).subscribe(
       () => {
         this.ngOnInit();
       },

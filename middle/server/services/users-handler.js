@@ -1,5 +1,5 @@
 import usersRep from './users-repository';
-import conversationsHandler from './conversations-handler';
+import convHandler from './conversations-handler';
 
 
 async function create(req, res) {
@@ -98,8 +98,8 @@ async function addLike(req, res) {
         addToArray(likedUser.likedBy, requester.id);
         await updateUserGeneric(likedUser);
 
-        if (await likeEachOther(requester.id, likedUser.id)) {
-            let created = await conversationsHandler.createConversation(likedUser.id, requester.id);
+        if (await likeEachOther(requester.id, likedUser.id) && ! await convHandler.conversationExists(likedUser.id, requester.id)) {
+            let created = await convHandler.createConversation(likedUser.id, requester.id);
             if (!created) {
                 response.result = 'conversation not created';
                 res.send(response);
@@ -115,8 +115,10 @@ async function addLike(req, res) {
 
 const removeFromArray = function removeFromArray(array, item) {
     let index = array.indexOf(item);
-    if (index > 1)
-        array.remove(index);
+    console.log('array : ' + array);
+    console.log('id : ' + item);
+    if (index >= 0)
+        array.splice(index);
 }
 
 async function removeLike(req, res) {
@@ -140,7 +142,7 @@ async function removeLike(req, res) {
         removeFromArray(likedUser.likedBy, requester.id);
         await updateUserGeneric(likedUser);
 
-        await conversationsHandler.blockConversation(requester.id, likedUser.id);
+        await convHandler.blockConversation(requester.id, likedUser.id);
         response.result = 'ok';
         res.send(response);
     } catch (e) {
@@ -200,6 +202,7 @@ async function deleteUser(req, res) {
         res.status(400).end();
     }
 }
+
 
 export default {
     create,

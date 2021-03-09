@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import { ConnexionId } from '../models/connexionId.model';
-import {Observable, Subject} from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -10,12 +11,26 @@ export class AuthService {
 
   constructor(private httpService: HttpService) { }
 
-  emitSubject(): void {
+  public emitSubject(): void {
     this.authSubject.next(this.isAuth);
   }
 
-  public getRequesterId(): Observable<any> {
-    return this.httpService.getRequesterId();
+  public isConnected(): Observable<boolean> {
+    return this.httpService.getRequesterId().pipe(map(
+      (response: {id: number}) => {
+        if (response.id >= 0) {
+          this.setIsConnected(true);
+          return true;
+        } else {
+          this.setIsConnected(false);
+          return false;
+        }
+      }), catchError( (error) => {
+        console.log(error);
+        this.setIsConnected(false);
+        return of(false);
+      })
+    );
   }
 
   public connectUser(email: string, password: string): Observable<any> {
@@ -33,7 +48,4 @@ export class AuthService {
       this.emitSubject();
     }
   }
-
-
-
 }

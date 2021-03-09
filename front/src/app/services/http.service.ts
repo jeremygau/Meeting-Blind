@@ -66,7 +66,7 @@ export class HttpService {
     return this.http.delete(this.serverUrl + 'conv/' + userId.toString(), {observe: 'response'});
   }
 
-  public addMessage(userId: number, message: Message): Observable<any> {
+  public addMessage(message: Message): Observable<any> {
     return this.http.post<Message>(this.serverUrl + 'conv/', message, {headers: this.headers});
   }
 

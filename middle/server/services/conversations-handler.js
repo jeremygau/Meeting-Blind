@@ -44,15 +44,11 @@ function markAsReadIfValid(conversation, requesterId) {
 async function getConversation(req, res) {
     try {
         res.set('Content-Type', 'application/json');
-        console.log('got to get Conversation');
         let requesterId = req.session.requesterId;
         let userId = req.params.id;
-        console.log('id for conv : ' + userId);
         let conv = await getConversationGeneric(userId, requesterId);
-        console.log('got to conv without conv');
-        if (conv === null) res.status(403).end();
+        if (conv === null) res.status(404).end();
         markAsReadIfValid(conv, requesterId);
-        console.log('got to end of Conversation');
         res.send(conv)
     } catch (error) {
         res.status(400).end();
@@ -60,7 +56,10 @@ async function getConversation(req, res) {
 }
 
 async function getConversationGeneric(userId, requesterId) {
+    console.log('passed getConvGeneric');
+    console.log('userid = ' + userId + ' and requesterId = ' + requesterId);
     let result = await convRep.getConversation(requesterId, userId);
+    console.log('got the conv');
     if (result.body.hits.total.value === 0) {
         return null;
     }
@@ -118,21 +117,28 @@ function getLastMessage(conversation) {
 
 async function addMessage(req, res) {
     try {
+        res.set('Content-Type', 'application/json');
         let requesterId = req.session.requesterId;
-        console.log('passed in addMessage');
-        let userId = req.body.id;
-        let message = req.body.message;
+        let message = req.body;
+        let userId = message.receiver;
 
-        let conv = await getConversationGeneric(userId);
-        console.log('passed after getConversation addMessage');
-        if (conv === null) res.status(404).end();
-        message.id = conv.messages.length === 0 ? 0 : conv.messages[conv.messages.length - 1] + 1;
+        let conv = await getConversationGeneric(userId, requesterId);
+        console.log('passed after getConversation in addMessage...');
+        if (conv === null) { res.status(404).end(); }
+        console.log('... and there is a conversation');
+        message.id = conv.messages.length === 0 ? 0 : conv.messages[conv.messages.length - 1].id + 1;
         conv.messages.push(message);
         conv.hasUnreadMessages = true;
+
+        console.log('trying deleted');
         await convRep.deleteConversation(requesterId, userId);
+        console.log('trying storing');
         await convRep.store(conv);
+        console.log('YAS');
+
         res.status(201).end();
     } catch (error) {
+        console.log('error in add message : ' + error);
         res.status(400).end();
     }
 }
@@ -143,16 +149,19 @@ async function deleteMessage(req, res) {
         let userId = req.params.userId;
         let messageId = req.params.messageId;
 
-        let conv = await getConversationGeneric(userId);
+        let conv = await getConversationGeneric(userId, requesterId);
         if (conv === null) {
             res.status(404).end();
         }
         let index = getIndexOfMessage(messageId, conv);
         let message = conv.messages[index];
-        if (parseInt(message.sender) !== requesterId) {
+        if (message.sender !== requesterId) {
             res.status(403).end();
         }
-        conv.messages.remove(index);
+        if(index === -1) {
+            res.status(404).end();
+        }
+        conv.messages.splice(index);
         await convRep.deleteConversation(requesterId, userId);
         await convRep.store(conv);
         res.status(204).end();
@@ -202,6 +211,9 @@ async function conversationExist(user1Id, user2Id) {
     return result.body.hits.total.value > 0;
 }
 
+async function conversationExists(user1, user2) {
+    return await getConversationGeneric(user1, user2) !== null;
+}
 export default {
     createConversation,
     deleteConversation,
@@ -210,5 +222,6 @@ export default {
     addMessage,
     deleteMessage,
     blockConversation,
-    hasNewMessages
+    hasNewMessages,
+    conversationExists
 }

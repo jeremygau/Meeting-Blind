@@ -22,13 +22,14 @@ export class AppComponent implements OnInit, OnDestroy{
     this.messagesNotificationSubscription = this.notificationsService.newMessageSubject.subscribe(
       (hasNewMessages: boolean) => {
         this.hasNewMessages = hasNewMessages;
-      }
-    );
+      });
+
     this.connectionSubscription = this.authService.authSubject.subscribe(
       (isConnected: boolean) => {
         this.isConnected = isConnected;
-      }
-    );
+      });
+
+    this.updateConnectionStatus();
   }
 
   disconnect(): void {
@@ -52,6 +53,10 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.messagesNotificationSubscription.unsubscribe();
     this.connectionSubscription.unsubscribe();
+  }
+
+  private updateConnectionStatus(): void {
+    this.authService.isConnected().subscribe();
   }
 
 

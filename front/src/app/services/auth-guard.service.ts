@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -13,23 +13,19 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean |
     UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    return this.authService.getRequesterId().pipe(map(
-      (response: {id: number}) => {
-        if (response.id >= 0) {
-          this.authService.setIsConnected(true);
-          return true;
-        } else {
-          this.authService.setIsConnected(false);
+    return this.authService.isConnected().pipe(map(
+      (isAuth: boolean) => {
+        if (isAuth) { return true; }
+        else {
           this.router.navigate(['login']);
           return false;
         }
-      }), catchError( (error) => {
-        console.log(error);
-        this.router.navigate(['login']);
+      },
+      (error: any) => {
+        console.log('Auth error : ' + error);
         return of(false);
-      })
-    );
-
+      }
+    ));
   }
 
 }
