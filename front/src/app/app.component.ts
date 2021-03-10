@@ -37,6 +37,7 @@ export class AppComponent implements OnInit, OnDestroy{
       (response: any) => {
         if (response.status === 200) {
           this.authService.setIsConnected(false);
+          this.notificationsService.setMessageNotification(false);
           this.router.navigate(['']);
           return;
         } else {
