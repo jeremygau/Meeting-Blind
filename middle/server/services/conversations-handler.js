@@ -47,8 +47,6 @@ async function getConversation(req, res) {
         let requesterId = req.session.requesterId;
         let userId = req.params.id;
         let conv = await getConversationGeneric(userId, requesterId);
-        console.log("got the conversation searching with " + userId + " and " + requesterId);
-        console.log(conv !== null);
         if (conv === null) res.status(404).end();
         markAsReadIfValid(conv, requesterId);
         res.send(conv)
@@ -128,7 +126,6 @@ async function addMessage(req, res) {
 
         await convRep.deleteConversation(requesterId, userId);
         await convRep.store(conv);
-        console.log('allegedly stored the conversation properly');
         res.status(201).end();
     } catch (error) {
         console.log('error in add message : ' + error);
@@ -145,26 +142,22 @@ async function getConversationWithoutFullUsers(user1Id, user2Id) {
 async function deleteMessage(req, res) {
     try {
         let requesterId = req.session.requesterId;
-        let userId = req.params.userId;
-        let messageId = req.params.messageId;
-        console.log('got in delete Message');
+        let userId = req.query.userId;
+        let messageId = req.query.messageId;
         let conv = await getConversationWithoutFullUsers(userId, requesterId);
         if (conv === null) {
             res.status(404).end();
         }
-        console.log('conv exists');
         let index = getIndexOfMessage(messageId, conv);
+        if(index === -1) {
+            res.status(404).end();
+        }
         let message = conv.messages[index];
         if (message.sender !== requesterId) {
             res.status(403).end();
         }
 
-        console.log('authorized action');
-        if(index === -1) {
-            res.status(404).end();
-        }
-        console.log('message found');
-        conv.messages.splice(index);
+        conv.messages.splice(index, 1);
         await convRep.deleteConversation(requesterId, userId);
         await convRep.store(conv);
         res.status(204).end();
@@ -200,7 +193,7 @@ function sortMessagesByTimestamp(conversation) {
 function getIndexOfMessage(messageId, conv) {
     let index = 0;
     for (let convMessage of conv.messages) {
-        if (convMessage.id !== messageId)
+        if (convMessage.id !== parseInt(messageId))
             index++;
         else {
             return index

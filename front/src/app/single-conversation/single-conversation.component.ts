@@ -15,7 +15,7 @@ export class SingleConversationComponent implements OnInit {
   conversation!: Conversation;
   requesterId !: number;
   message = '';
-  systemMessage = 'Cette conversation est désactivée car l\'un de vous a unlike l\'autre. Vous ne pouvez plus envoyer de message';
+  systemMessage = 'Cette conversation est désactivée car l\'un de vous a unlike l\'autre. Vous ne pouvez plus envoyer de message.';
 
   constructor(private httpService: HttpService, private route: ActivatedRoute, private router: Router) { }
 
@@ -54,6 +54,7 @@ export class SingleConversationComponent implements OnInit {
     const message = new Message(0, this.requesterId, this.conversation.user2.id, new Date(), form.value.message);
     this.httpService.addMessage(message).subscribe(
       () => {
+        this.message = '';
         this.ngOnInit();
       },
       () => {

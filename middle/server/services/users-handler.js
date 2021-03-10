@@ -6,20 +6,14 @@ async function create(req, res) {
     res.set('Content-Type', 'application/json');
     try {
         const userBool = await userExist(req.body.email);
-        // console.log(userBool);
         if (userBool) {
             res.send({});
         } else {
             let newId = 0;
             let result = await usersRep.getAll();
-            console.log(result);
             let nbUsers = result.body.hits.total.value;
-            // console.log(nbUsers);
             if (nbUsers !== 0) {
-                // console.log(result.body.hits.hits);
-                // console.log(result.body.hits.hits[nbUsers - 1]);
                 newId = result.body.hits.hits[nbUsers - 1]._source.id + 1;
-                // console.log('newId', newId);
             }
             req.session.requesterId = newId;
             req.body.id = newId;
@@ -115,10 +109,8 @@ async function addLike(req, res) {
 
 const removeFromArray = function removeFromArray(array, item) {
     let index = array.indexOf(item);
-    console.log('array : ' + array);
-    console.log('id : ' + item);
     if (index >= 0)
-        array.splice(index);
+        array.splice(index, 1);
 }
 
 async function removeLike(req, res) {
@@ -196,9 +188,7 @@ async function deleteUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
         let result = await usersRep.deleteUserById(req.params.id);
-        console.log(result);
         if (result.body.deleted === 1) {
-            console.log('ok deletion');
             res.send({delete: 'ok'});
         } else {
             res.send({});

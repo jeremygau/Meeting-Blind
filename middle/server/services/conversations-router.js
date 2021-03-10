@@ -7,7 +7,7 @@ let conversationsRouter = express.Router();
 conversationsRouter.get('/:id', asyncHandler(conversationsHandler.getConversation));
 conversationsRouter.delete('/:id', asyncHandler(conversationsHandler.deleteConversation));
 conversationsRouter.post('/', asyncHandler(conversationsHandler.addMessage));
-conversationsRouter.delete('/:userId-AND-messageId', asyncHandler(conversationsHandler.deleteMessage));
+conversationsRouter.delete('/', asyncHandler(conversationsHandler.deleteMessage));
 conversationsRouter.get('/check/newMessages', asyncHandler(conversationsHandler.hasNewMessages));
 conversationsRouter.get('/', asyncHandler(conversationsHandler.getAllConversations));
 

@@ -70,7 +70,9 @@ export class HttpService {
   }
 
   public deleteMessage(userId: number, messageId: number): Observable<any> {
-    return this.http.delete(this.serverUrl + 'conv/' + userId + '-AND-' + messageId, {observe: 'response'});
+    const params = new HttpParams().set('userId', userId.toString()).set('messageId', messageId.toString());
+
+    return this.http.delete(this.serverUrl + 'conv/', {params, observe: 'response'});
   }
 
   public connectUser(connexionId: ConnexionId): Observable<any> {

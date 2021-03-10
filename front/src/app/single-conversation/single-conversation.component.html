@@ -31,7 +31,7 @@
         <div class="publisher bt-1 border-light">
           <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
             <input type="text" id="message" placeholder="Ecrivez votre message..." class="form-control" name="message"
-                   minlength="1" [value]="message" ngModel required>
+                   minlength="1" [(ngModel)]="message" required>
             <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">
               Envoyer
             </button>

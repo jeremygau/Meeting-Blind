@@ -39,7 +39,6 @@ const store = (conversation) => {
 const getConversation = (user1Id, user2Id) => {
     return esClient.search({
         index,
-        refresh: 'wait_for',
         body: {
             "query": {
                 "bool": {
