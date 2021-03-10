@@ -1,14 +1,16 @@
-<div class="position-absolute top-50 start-50 translate-middle text-center">
-  <form [formGroup]="connectionForm" (ngSubmit)="onSubmitForm()">
-    <img src="../resources/logooo2.png" alt="logo" class="img-fluid">
-    <h2>Se connecter</h2>
-    <label for="email" class="visually-hidden">Email</label>
-    <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" required="" autofocus="">
+<div class="position-relative vh-100">
+  <div class="position-absolute top-50 start-50 translate-middle text-center">
+    <form [formGroup]="connectionForm" (ngSubmit)="onSubmitForm()">
+      <img src="../resources/logo.svg" alt="logo" class="img-fluid" height="100">
+      <h2>Se connecter</h2>
+      <label for="email" class="visually-hidden">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" required="" autofocus="">
 
-    <label for="password" class="visually-hidden">Mot de passe</label>
-    <input type="password" class="form-control" id="password" formControlName="password" required="" placeholder="Mot de passe">
+      <label for="password" class="visually-hidden">Mot de passe</label>
+      <input type="password" class="form-control" id="password" formControlName="password" required="" placeholder="Mot de passe">
 
-    <button type="submit" class="w-100 btn btn-lg btn-primary" [disabled]="connectionForm.invalid">Se connecter</button>
-  </form>
+      <button type="submit" class="w-100 btn btn-lg btn-primary" [disabled]="connectionForm.invalid">Se connecter</button>
+    </form>
+  </div>
 </div>
 

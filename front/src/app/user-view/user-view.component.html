@@ -1,52 +1,55 @@
 <div *ngIf="user !== undefined">
-  <div class="text-center bg-cyan rounded-50 shadow-lg float-lg-start p-3">
+  <div class="rounded-50 shadow-lg float-lg-start p-3 halfw">
     <div class="row">
-      <strong>Mail : </strong>
+      <h1>Profil</h1>
+    </div>
+    <div class="row">
+      <h2>Mail </h2>
       <p>{{user.email}}</p>
     </div>
     <div class="row">
-      <strong>Nom complet : </strong>
+      <h2>Nom complet </h2>
       <p>{{user.firstName}}</p>
     </div>
     <div class="row">
-      <strong>Ville : </strong>
+      <h2>Ville </h2>
       <p>{{user.city}}</p>
     </div>
     <div class="row">
-      <strong>Genre : </strong>
+      <h2>Genre </h2>
       <p>{{user.gender}}</p>
     </div>
     <div class="row">
-      <strong>Genre recherché : </strong>
+      <h2>Genre recherché </h2>
       <p>{{user.desiredGender}}</p>
     </div>
     <div class="row">
-      <strong>Description : </strong>
-      <p>{{user.description}}</p>
+      <h2>Description </h2>
+      <p class="text-break">{{user.description}}</p>
     </div>
     <div class="row">
-      <div>
+      <div class="text-center">
         <a routerLink="editProfile" class="btn btn-primary text-white">Modifier</a>
       </div>
     </div>
   </div>
 
-  <div class="float-lg-end w-50 p-3">
+  <div class="float-lg-end halfw p-3">
     <div class="position-relative">
-    <span class="position-absolute top--3 start--3 bg-white rounded-circle first-plan">
-      <img src="../resources/heart_emoji.svg" alt="Likeurs" width="50" height="50">
+    <span class="position-absolute top--3 start--3 first-plan">
+      <img src="../resources/smiley.svg" alt="Likeurs" width="50" height="50" class="rounded-circle shadow-lg">
     </span>
-      <div class="list-group like overflow-auto mb-5 bg-cyan shadow-lg rounded-50">
-        <p *ngIf="user.likedBy.length == 0" class="m-3">Bah alors personne veut de vous ou quoi ?</p>
+      <div class="list-group like overflow-auto mb-5 bg-dark-blue shadow-lg rounded-50">
+        <p *ngIf="user.likedBy.length == 0" class="m-3 text-center text-white">Bah alors personne veut de vous ou quoi ?</p>
         <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
       </div>
     </div>
     <div class="position-relative">
     <span class="position-absolute top--3 start--3 first-plan">
-      <img src="../resources/heart.svg" alt="Cruch" width="50" height="50">
+      <img src="../resources/coeur.svg" alt="Cruch" width="50" height="50" class="rounded-circle shadow-lg">
     </span>
-      <div class="list-group like overflow-auto shadow-lg rounded-50 bg-cyan">
-        <p *ngIf="user.likedUsers.length == 0" class="m-3">Vous etes difficile on dirai !</p>
+      <div class="list-group like overflow-auto shadow-lg rounded-50 bg-light-blue">
+        <p *ngIf="user.likedUsers.length == 0" class="m-3 text-center">Vous etes difficile on dirai !</p>
         <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
       </div>
     </div>
