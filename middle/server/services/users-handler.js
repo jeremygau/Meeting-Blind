@@ -93,7 +93,7 @@ async function addLike(req, res) {
         await updateUserGeneric(likedUser);
 
         if (await likeEachOther(requester.id, likedUser.id)) {
-            let existingConv = await convHandler.getConversationWithoutFullUsers(likedUser.id, requester.id);
+            let existingConv = await convHandler.getConversationGeneric(likedUser.id, requester.id);
             if (existingConv !== null) {
                 let convUnblocked = await convHandler.setBlockStatusToConversation(existingConv.user1, existingConv.user2, false);
                 if (! convUnblocked) {

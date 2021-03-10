@@ -75,7 +75,7 @@ export class HttpService {
     return this.http.delete<Conversation>(this.serverUrl + 'conv/', {params});
   }
 
-  public connectUser(connexionId: ConnexionId): Observable<any> {
+  public connectUser(connexionId: ConnexionId): Observable<ConnexionId> {
     return this.http.post<ConnexionId>(this.serverUrl + 'connection/connect', connexionId, {headers: this.headers});
   }
 

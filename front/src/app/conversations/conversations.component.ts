@@ -10,6 +10,7 @@ import { Conversation } from '../models/conversation.model';
 export class ConversationsComponent implements OnInit {
   conversations: Conversation[] = [];
   requesterId!: number;
+  defaultMessage = 'Il n\'y a aucune conversation à afficher :(. Likez des gens, et s\'ils vous likent en retour, revenez ici !';
 
   constructor(private httpService: HttpService) { }
 

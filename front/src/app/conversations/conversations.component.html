@@ -1,5 +1,9 @@
 <h2>Mes conversations</h2>
 <ul class="list-group">
+  <div *ngIf="conversations.length === 0">
+    <p>{{defaultMessage}}</p>
+    <a routerLink="/search">Faire des rencontres</a>
+  </div>
   <li class="list-group-item" *ngFor="let conv of conversations">
     <h3>{{conv.user2.firstName}}</h3>
     <p *ngIf="conv.messages.length > 0">Dernier message : {{conv.messages[0].content}}</p>
