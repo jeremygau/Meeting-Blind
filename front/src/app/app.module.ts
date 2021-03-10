@@ -13,6 +13,7 @@ import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { LikeComponent } from './like/like.component';
+import { MessageComponent } from './message/message.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { LikeComponent } from './like/like.component';
     UserConnectionComponent,
     UserEditComponent,
     LikeComponent,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,

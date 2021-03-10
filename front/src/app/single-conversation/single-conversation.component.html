@@ -1,21 +1,7 @@
 <div class="col vh-80 border overflow-auto p-2" id="chat">
   <div *ngFor="let message of conversation?.messages" class="">
 
-    <div *ngIf="message.sender !== requesterId" class="mb-2 d-flex">
-      <div class="bg-light-blue rounded p-1 d-flex align-items-center">
-        <a [routerLink]="['/users', message.sender]" class="text-decoration-none">{{getSenderName(message)}} : </a>
-        <div>{{message.content}}</div>
-      </div>
-    </div>
-
-    <div *ngIf="message.sender === requesterId" class="mb-2 d-flex flex-row-reverse">
-      <div class="bg-dark-blue text-white rounded p-1">
-        {{message.content}}
-      </div>
-      <button class="btn bg-pink" *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
-        <img class="img-fluid mx-auto d-block" src="../resources/trash.svg" alt="delete"/>
-      </button>
-    </div>
+    <app-message (deleteMsg)="deleteMessage($event)" [message]="message" [requesterId]="requesterId" [sender]="getSenderName(message)"></app-message>
 
   </div>
 </div>
