@@ -56,14 +56,10 @@ async function getConversation(req, res) {
 }
 
 async function getConversationGeneric(userId, requesterId) {
-    console.log('passed getConvGeneric');
-    console.log('userid = ' + userId + ' and requesterId = ' + requesterId);
-    let result = await convRep.getConversation(requesterId, userId);
-    console.log('got the conv');
-    if (result.body.hits.total.value === 0) {
+    let conv = await getConversationWithoutFullUsers(requesterId, userId);
+    if (conv === null) {
         return null;
     }
-    let conv = result.body.hits.hits[0]._source;
     sortMessagesByTimestamp(conv);
     conv.user1 = await usersHandler.getUserByIdGeneric(requesterId);
     conv.user2 = await usersHandler.getUserByIdGeneric(userId);
@@ -122,20 +118,14 @@ async function addMessage(req, res) {
         let message = req.body;
         let userId = message.receiver;
 
-        let conv = await getConversationGeneric(userId, requesterId);
-        console.log('passed after getConversation in addMessage...');
+        let conv = await getConversationWithoutFullUsers(userId, requesterId);
         if (conv === null) { res.status(404).end(); }
-        console.log('... and there is a conversation');
         message.id = conv.messages.length === 0 ? 0 : conv.messages[conv.messages.length - 1].id + 1;
         conv.messages.push(message);
         conv.hasUnreadMessages = true;
 
-        console.log('trying deleted');
         await convRep.deleteConversation(requesterId, userId);
-        console.log('trying storing');
         await convRep.store(conv);
-        console.log('YAS');
-
         res.status(201).end();
     } catch (error) {
         console.log('error in add message : ' + error);
@@ -143,25 +133,31 @@ async function addMessage(req, res) {
     }
 }
 
+async function getConversationWithoutFullUsers(user1Id, user2Id) {
+    const result = await convRep.getConversation(user1Id, user2Id);
+    if(result.body.hits.total.value === 0) { return null; }
+    return result.body.hits.hits[0]._source;
+}
+
 async function deleteMessage(req, res) {
     try {
         let requesterId = req.session.requesterId;
-        let userId = req.params.userId;
-        let messageId = req.params.messageId;
-
-        let conv = await getConversationGeneric(userId, requesterId);
+        let userId = req.query.userId;
+        let messageId = req.query.messageId;
+        let conv = await getConversationWithoutFullUsers(userId, requesterId);
         if (conv === null) {
             res.status(404).end();
         }
         let index = getIndexOfMessage(messageId, conv);
+        if(index === -1) {
+            res.status(404).end();
+        }
         let message = conv.messages[index];
         if (message.sender !== requesterId) {
             res.status(403).end();
         }
-        if(index === -1) {
-            res.status(404).end();
-        }
-        conv.messages.splice(index);
+
+        conv.messages.splice(index, 1);
         await convRep.deleteConversation(requesterId, userId);
         await convRep.store(conv);
         res.status(204).end();
@@ -190,14 +186,14 @@ async function hasNewMessages(req, res) {
 
 function sortMessagesByTimestamp(conversation) {
     conversation.messages.sort(function (a, b) {
-        return (new Date(b.timestamp) - new Date(a.timestamp));
+        return (new Date(a.timestamp) - new Date(b.timestamp));
     })
 }
 
 function getIndexOfMessage(messageId, conv) {
     let index = 0;
     for (let convMessage of conv.messages) {
-        if (convMessage.id !== messageId)
+        if (convMessage.id !== parseInt(messageId))
             index++;
         else {
             return index

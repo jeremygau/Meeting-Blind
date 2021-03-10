@@ -60,32 +60,57 @@ const deleteUserById = (id) => {
         });
 };
 
-
-const getUsersForCity = (city, desiredGender, requesterGender) => {
+const getAllUsersForCity = (city, requester) => {
     return esClient.search({
         index,
         body: {
             "query": {
                 "bool": {
                     "must": [
-                        {"term": {
-                                "city": city
-                            }
-                        },
-                        {"term": {
-                                "gender": desiredGender
+                        {"term": {"city": city}},
+                        {"bool": {
+                                "should": [
+                                    {"term": {"desiredGender": requester.gender}},
+                                    {"term": {"desiredGender": "homme/femme"}}
+                                ]
                             }
                         },
                         {"bool": {
+                                "must_not": [
+                                    {"term": {"id": requester.id}}
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    })
+        .then(response => response)
+        .catch((error) => {
+            handleElasticsearchError(error);
+        })
+}
+
+const getSpecificUsersForCity = (city, requester) => {
+    return esClient.search({
+        index,
+        body: {
+            "query": {
+                "bool": {
+                    "must": [
+                            {"term": {"city": city}},
+                            {"term": {"gender": requester.desiredGender}},
+                            {"bool": {
                                 "should": [
-                                    {"term": {
-                                            "desiredGender": requesterGender
-                                        }
-                                    },
-                                    {"term": {
-                                            "desiredGender": "allGenders" // TODO Corriger quand on saura comment c'est traduit
-                                        }
-                                    }
+                                    {"term": {"desiredGender": requester.gender}},
+                                    {"term": {"desiredGender": "homme/femme"}}
+                                ]
+                            }
+                        },
+                        {"bool": {
+                                "must_not": [
+                                    {"term": {"id": requester.id}}
                                 ]
                             }
                         }
@@ -142,4 +167,4 @@ const updateUser = (user) => {
         })
 }
 
-export default {getUser, store, getAll, getUsersForCity, getUserById, deleteUserById, deleteUser};
+export default {getUser, store, getAll, getSpecificUsersForCity, getAllUsersForCity, getUserById, deleteUserById, deleteUser};
