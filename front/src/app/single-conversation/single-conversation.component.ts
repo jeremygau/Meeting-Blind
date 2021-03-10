@@ -40,11 +40,21 @@ export class SingleConversationComponent implements OnInit {
 
   deleteMessage(message: Message): void {
     this.httpService.deleteMessage(this.conversation.user2.id, message.id).subscribe(
-      (response: any) => {
-        switch (response.status) {
-          case 204: this.ngOnInit(); break;
-          case 403: alert('Vous n\'êtes pas autorisé à supprimer un message que vous n\'avez pas envoyé.'); break;
-          default: this.sendErrorAlert();
+      (updatedConv: Conversation) => {
+        if (updatedConv.user1.id >= 0) {
+          this.conversation = updatedConv;
+        } else {
+          switch (updatedConv.user1.id) {
+            case -403:
+              alert('Vous n\'êtes pas autorisé à supprimer un message que vous n\'avez pas envoyé.');
+              break;
+            case -404:
+              alert('La conversation ou le message semblent ne plus exister. Rafraichissez la page. Si le problème persiste, ' +
+                'contactez un administrateur');
+              break;
+            default:
+              this.sendErrorAlert();
+          }
         }
       }
     );
@@ -53,9 +63,20 @@ export class SingleConversationComponent implements OnInit {
   onSubmit(form: NgForm): void {
     const message = new Message(0, this.requesterId, this.conversation.user2.id, new Date(), form.value.message);
     this.httpService.addMessage(message).subscribe(
-      () => {
-        this.message = '';
-        this.ngOnInit();
+      (updatedConv: Conversation) => {
+        if (updatedConv.user1.id >= 0) {
+          this.message = '';
+          this.conversation = updatedConv;
+        } else {
+          switch (updatedConv.user1.id) {
+            case -404:
+              alert('La conversation n\'as pu etre récupérée. Rafraichissez la page. Si le problème persiste, ' +
+                'contactez un administrateur');
+              break;
+            default:
+              this.sendErrorAlert();
+          }
+        }
       },
       () => {
         this.sendErrorAlert();

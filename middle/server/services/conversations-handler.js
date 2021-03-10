@@ -23,15 +23,15 @@ async function deleteConversation(req, res) {
     }
 }
 
-async function blockConversation(requesterId, userId) {
-    let result = await convRep.getConversation(requesterId, userId);
-    if (result.body.hits.total.value === 0) return false;
-    let conv = result.body.hits.hits[0]._source;
-    conv.isBlocked = true;
-    await convRep.deleteConversation(requesterId, userId);
-    await convRep.store(conv);
+async function setBlockStatusToConversation(requesterId, userId, isBlocked) {
+    let conv = await getConversationWithoutFullUsers(requesterId, userId);
+    if (conv === null) return false;
+    if(conv.isBlocked === isBlocked) { return true; }
+    conv.isBlocked = isBlocked;
+    await updateConversation(conv);
     return true;
 }
+
 
 function markAsReadIfValid(conversation, requesterId) {
     if(! conversation.hasUnreadMessages) return;
@@ -61,9 +61,13 @@ async function getConversationGeneric(userId, requesterId) {
         return null;
     }
     sortMessagesByTimestamp(conv);
+    await fillWithFullUsersIntel(conv, userId, requesterId);
+    return conv;
+}
+
+async function fillWithFullUsersIntel(conv, userId, requesterId) {
     conv.user1 = await usersHandler.getUserByIdGeneric(requesterId);
     conv.user2 = await usersHandler.getUserByIdGeneric(userId);
-    return conv;
 }
 
 /**
@@ -114,19 +118,24 @@ function getLastMessage(conversation) {
 async function addMessage(req, res) {
     try {
         res.set('Content-Type', 'application/json');
+        let errorMessage = {'user1': {'id': ''} };
         let requesterId = req.session.requesterId;
         let message = req.body;
         let userId = message.receiver;
 
         let conv = await getConversationWithoutFullUsers(userId, requesterId);
-        if (conv === null) { res.status(404).end(); }
+        if (conv === null) {
+            errorMessage.user1.id = -404;
+            res.send(errorMessage);
+        }
         message.id = conv.messages.length === 0 ? 0 : conv.messages[conv.messages.length - 1].id + 1;
         conv.messages.push(message);
         conv.hasUnreadMessages = true;
 
-        await convRep.deleteConversation(requesterId, userId);
-        await convRep.store(conv);
-        res.status(201).end();
+        await updateConversation(conv);
+        sortMessagesByTimestamp(conv);
+        await fillWithFullUsersIntel(conv, userId, requesterId);
+        res.send(conv);
     } catch (error) {
         console.log('error in add message : ' + error);
         res.status(400).end();
@@ -141,29 +150,41 @@ async function getConversationWithoutFullUsers(user1Id, user2Id) {
 
 async function deleteMessage(req, res) {
     try {
+        res.set('Content-Type', 'application/json');
+        let errorMessage = {'user1': {'id': ''} };
         let requesterId = req.session.requesterId;
         let userId = req.query.userId;
         let messageId = req.query.messageId;
         let conv = await getConversationWithoutFullUsers(userId, requesterId);
         if (conv === null) {
-            res.status(404).end();
+            errorMessage.user1.id = -404;
+            res.send(errorMessage);
         }
         let index = getIndexOfMessage(messageId, conv);
         if(index === -1) {
-            res.status(404).end();
+            errorMessage.user1.id = -404;
+            res.send(errorMessage);
         }
         let message = conv.messages[index];
         if (message.sender !== requesterId) {
-            res.status(403).end();
+            errorMessage.user1.id = -403;
+            res.send(errorMessage);
         }
 
         conv.messages.splice(index, 1);
-        await convRep.deleteConversation(requesterId, userId);
-        await convRep.store(conv);
-        res.status(204).end();
+        await updateConversation(conv);
+        sortMessagesByTimestamp(conv);
+        await fillWithFullUsersIntel(conv, userId, requesterId);
+        res.send(conv);
     } catch (error) {
+        console.log('error in deleteMessage : ' + error);
         res.status(400).end();
     }
+}
+
+async function updateConversation(conv) {
+    await convRep.deleteConversation(conv.user1, conv.user2);
+    await convRep.store(conv);
 }
 
 async function hasNewMessages(req, res) {
@@ -207,9 +228,6 @@ async function conversationExist(user1Id, user2Id) {
     return result.body.hits.total.value > 0;
 }
 
-async function conversationExists(user1, user2) {
-    return await getConversationGeneric(user1, user2) !== null;
-}
 export default {
     createConversation,
     deleteConversation,
@@ -217,7 +235,7 @@ export default {
     getAllConversations,
     addMessage,
     deleteMessage,
-    blockConversation,
+    setBlockStatusToConversation,
     hasNewMessages,
-    conversationExists
+    getConversationWithoutFullUsers,
 }

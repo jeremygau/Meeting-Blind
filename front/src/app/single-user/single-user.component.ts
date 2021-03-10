@@ -70,11 +70,17 @@ export class SingleUserComponent implements OnInit {
       case 'requester unknown' :
         this.router.navigate(['login']);
         break;
-      case 'user unknown' :
+      case 'liked user unknown' :
         alert('L\'utilisateur n\'existe pas ou plus.');
         break;
       case 'conversation not created' :
         alert('Votre conversation n\'a pas pu etre créée. Contactez un administrateur');
+        break;
+      case 'conversation not blocked' :
+        alert('Votre conversation n\'a pas été bloquée. Contactez un administrateur');
+        break;
+      case 'conversation not unblocked' :
+        alert('Votre conversation n\'a pas été débloquée. Contactez un administrateur');
         break;
       default:
         alert(this.genericErrorMessage);

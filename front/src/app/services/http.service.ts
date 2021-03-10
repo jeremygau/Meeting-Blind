@@ -65,14 +65,14 @@ export class HttpService {
     return this.http.delete(this.serverUrl + 'conv/' + userId.toString(), {observe: 'response'});
   }
 
-  public addMessage(message: Message): Observable<any> {
-    return this.http.post<Message>(this.serverUrl + 'conv/', message, {headers: this.headers});
+  public addMessage(message: Message): Observable<Conversation> {
+    return this.http.post<Conversation>(this.serverUrl + 'conv/', message, {headers: this.headers});
   }
 
-  public deleteMessage(userId: number, messageId: number): Observable<any> {
+  public deleteMessage(userId: number, messageId: number): Observable<Conversation> {
     const params = new HttpParams().set('userId', userId.toString()).set('messageId', messageId.toString());
 
-    return this.http.delete(this.serverUrl + 'conv/', {params, observe: 'response'});
+    return this.http.delete<Conversation>(this.serverUrl + 'conv/', {params});
   }
 
   public connectUser(connexionId: ConnexionId): Observable<any> {

@@ -92,11 +92,20 @@ async function addLike(req, res) {
         addToArray(likedUser.likedBy, requester.id);
         await updateUserGeneric(likedUser);
 
-        if (await likeEachOther(requester.id, likedUser.id) && ! await convHandler.conversationExists(likedUser.id, requester.id)) {
-            let created = await convHandler.createConversation(likedUser.id, requester.id);
-            if (!created) {
-                response.result = 'conversation not created';
-                res.send(response);
+        if (await likeEachOther(requester.id, likedUser.id)) {
+            let existingConv = await convHandler.getConversationWithoutFullUsers(likedUser.id, requester.id);
+            if (existingConv !== null) {
+                let convUnblocked = await convHandler.setBlockStatusToConversation(existingConv.user1, existingConv.user2, false);
+                if (! convUnblocked) {
+                    response.result('conversation not unblocked');
+                    res.send(response);
+                }
+            } else {
+                let created = await convHandler.createConversation(likedUser.id, requester.id);
+                if (!created) {
+                    response.result = 'conversation not created';
+                    res.send(response);
+                }
             }
         }
         response.result = 'ok';
@@ -134,7 +143,10 @@ async function removeLike(req, res) {
         removeFromArray(likedUser.likedBy, requester.id);
         await updateUserGeneric(likedUser);
 
-        await convHandler.blockConversation(requester.id, likedUser.id);
+        let convBlocked = await convHandler.setBlockStatusToConversation(requester.id, likedUser.id, true);
+        if (!convBlocked) {
+            response.result = 'conversation not blocked';
+        }
         response.result = 'ok';
         res.send(response);
     } catch (e) {
