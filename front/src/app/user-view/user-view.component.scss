@@ -1,11 +1,27 @@
+body {
+  --light-blue: rgba(162, 177, 234, 1);
+  --dark-blue: rgba(55, 86, 237, 1);
+}
+
 .like {
   min-height: 25vh;
   max-height: 25vh;
 }
 
+.bg-dark-blue {
+  background-color: rgba(55, 86, 237, 1);
+}
+
+.bg-light-blue {
+  background-color: rgba(162, 177, 234, 1);
+}
 
 .bg-cyan {
   background-color: #cfe2ff;
+}
+
+h2 {
+  color: rgba(55, 86, 237, 1);
 }
 
 .rounded-50 {
@@ -24,3 +40,12 @@
   top: -3%;
 }
 
+.halfw {
+  width: 40%;
+}
+
+@media (max-width: 991.98px) {
+  .halfw {
+    width: 100%;
+  }
+}
