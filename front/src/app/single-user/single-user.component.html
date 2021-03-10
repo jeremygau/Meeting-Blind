@@ -1,16 +1,36 @@
-
-<h2>{{user.firstName}}</h2>
-<p *ngIf="user.description && user.description.length > 0">Description : {{user.description}}</p>
-<p>Genre : {{user.gender}}</p>
-<p>Recherche : {{user.desiredGender}}</p>
-<button class="btn btn-sm btn-success"
-        *ngIf="isLikedByRequester"
-        (click)="dislike()">Liked
-</button>
-<button class="btn btn-sm btn-success"
-        *ngIf="!isLikedByRequester"
-        (click)="like()">like
-</button>
-<a [routerLink]="['/conv', user.id]"
-        *ngIf="isLikedByRequester && likedRequester">Voir la conversation
-</a>
+<div class="position-relative vh-80">
+  <div class="position-absolute start-50 top-50 translate-middle rounded-50 bg-white p-5 shadow-lg">
+    <h1 class="name-title">{{user.firstName}}</h1>
+    <div *ngIf="user.description && user.description.length > 0" class="row">
+      <h2 class="category">Description </h2>
+      <div class="overflow-auto">
+        <p class="text-break">{{user.description}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <h2 class="category">Genre </h2>
+      <p>{{user.gender}}</p>
+    </div>
+    <div class="row">
+      <h2 class="category">Genre recherché </h2>
+      <p>{{user.desiredGender}}</p>
+    </div>
+    <div class="row">
+      <div *ngIf="isLikedByRequester" class="col">
+        <button class="btn btn-like"
+                (click)="dislike()">Liked
+        </button>
+      </div>
+      <div *ngIf="!isLikedByRequester" class="col">
+      <button class="btn btn-like"
+              (click)="like()">like
+      </button>
+      </div>
+      <div class="col">
+        <a class="btn btn-primary" [routerLink]="['/conv', user.id]"
+           *ngIf="isLikedByRequester && likedRequester">Tchatter
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
