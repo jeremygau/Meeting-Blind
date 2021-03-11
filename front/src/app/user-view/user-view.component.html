@@ -39,7 +39,7 @@
     <span class="position-absolute top--3 start--3 first-plan">
       <img src="../resources/smiley.svg" alt="Likeurs" width="50" height="50" class="rounded-circle shadow-lg">
     </span>
-      <div class="list-group like overflow-auto mb-5 bg-dark-blue shadow-lg rounded-50">
+      <div class="list-group list-group-flush like overflow-auto mb-5 bg-dark-blue shadow-lg rounded-50">
         <p *ngIf="user.likedBy.length == 0" class="m-3 text-center text-white">Bah alors, personne ne veut de vous ou quoi ?</p>
         <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
       </div>
@@ -48,7 +48,7 @@
     <span class="position-absolute top--3 start--3 first-plan">
       <img src="../resources/coeur.svg" alt="Cruch" width="50" height="50" class="rounded-circle shadow-lg">
     </span>
-      <div class="list-group like overflow-auto shadow-lg rounded-50 bg-light-blue">
+      <div class="list-group list-group-flush like overflow-auto shadow-lg rounded-50 bg-light-blue">
         <p *ngIf="user.likedUsers.length == 0" class="m-3 text-center">Vous etes difficile on dirait !</p>
         <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
       </div>
