@@ -1,5 +1,12 @@
 <div class="mt-5">
-  <h1 class="name-title">{{conversation.user2}}</h1>
+  <div class="row">
+    <div class="col-9">
+      <h1 class="name-title">{{conversation.user2.firstName}}</h1>
+    </div>
+    <div class="col-3">
+      <button class="btn btn-danger"   (click)="deleteConversation()">Supprimer la conversation</button>
+    </div>
+  </div>
   <div class="col vh-80 border overflow-auto p-2" id="chat">
     <div *ngFor="let message of conversation?.messages" class="">
 
@@ -11,14 +18,19 @@
   <div>
     <p *ngIf="conversation.isBlocked" [ngStyle]="{color: 'red'}"> {{systemMessage}}</p>
     <div class="publisher bt-1 border-light">
-      <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
-        <input type="text" id="message" placeholder="Ecrivez votre message..." class="form-control" name="message"
-               minlength="1" [(ngModel)]="message" required="" [disabled]="conversation.isBlocked">
-        <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">
-          Envoyer
-        </button>
+      <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm" class="row align-items-center">
+        <div class="col-11">
+          <input type="text" id="message" placeholder="Ecrivez votre message..." class="form-control" name="message"
+                 minlength="1" [(ngModel)]="message" required="" [disabled]="conversation.isBlocked">
+        </div>
+        <div class="col-1 d-grid">
+          <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
+              <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.499.499 0 0 0 .042-.028l3.984-2.933zM7.8 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"/>
+            </svg>
+          </button>
+        </div>
       </form>
-      <button class="btn btn-danger" (click)="deleteConversation()">Supprimer la conversation</button>
     </div>
   </div>
 </div>

@@ -17,12 +17,12 @@
     </div>
     <div class="row">
       <div *ngIf="isLikedByRequester" class="col">
-        <button class="btn btn-like"
+        <button class="btn btn-light-blue"
                 (click)="dislike()">Liked
         </button>
       </div>
       <div *ngIf="!isLikedByRequester" class="col">
-      <button class="btn btn-like"
+      <button class="btn btn-light-blue"
               (click)="like()">like
       </button>
       </div>

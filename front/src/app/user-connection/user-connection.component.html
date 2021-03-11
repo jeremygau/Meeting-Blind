@@ -1,5 +1,5 @@
 <div class="position-relative vh-80">
-  <div class="position-absolute top-50 start-50 translate-middle text-center rounded-50 shadow-lg p-5">
+  <div class="position-absolute top-50 start-50 translate-middle text-center rounded-50 shadow-lg p-5" id="inscription">
     <form [formGroup]="connectionForm" (ngSubmit)="onSubmitForm()">
       <img src="../resources/logo.svg" alt="logo" class="img-fluid mb-3" height="100">
       <div class="mb-3 form-floating">
@@ -12,7 +12,7 @@
                placeholder="Mot de passe">
         <label for="password" class="form-label">Mot de passe</label>
       </div>
-      <button type="submit" class="w-100 btn btn-lg btn-primary" [disabled]="connectionForm.invalid">Se connecter
+      <button type="submit" class="w-100 btn btn-lg btn-dark-blue" [disabled]="connectionForm.invalid">Se connecter
       </button>
     </form>
   </div>

@@ -15,9 +15,9 @@
         </a>
       </div>
       <div class="navbar-nav">
-        <a *ngIf="!isConnected" routerLinkActive="active" routerLink="inscription" class="btn btn-primary me-2">Inscription</a>
-        <a *ngIf="!isConnected" routerLinkActive="active" routerLink="login" class="btn btn-info me-2">Se Connecter</a>
-        <button (click)="disconnect()" class="btn btn-info me-2" *ngIf="isConnected">Se Deconnecter</button>
+        <a *ngIf="!isConnected" routerLinkActive="active" routerLink="inscription" class="btn btn-dark-blue me-2">Inscription</a>
+        <a *ngIf="!isConnected" routerLinkActive="active" routerLink="login" class="btn btn-light-blue me-2">Se Connecter</a>
+        <button (click)="disconnect()" class="btn btn-light-blue me-2" *ngIf="isConnected">Se Deconnecter</button>
       </div>
     </div>
   </div>
