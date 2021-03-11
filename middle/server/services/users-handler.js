@@ -215,11 +215,8 @@ async function updateUserGeneric(user) {
 async function deleteUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
-        console.log('entened in delete');
         const requesterId = req.session.requesterId;
-        console.log(requesterId);
         const allDeleted = await removeUserFromAllLikesArray(requesterId);
-        console.log(allDeleted);
         if (! allDeleted) { res.send({}); }
         let result = await usersRep.deleteUserById(requesterId);
         if (result.body.deleted === 1) {
@@ -238,14 +235,11 @@ async function removeUserFromAllLikesArray(requesterId) {
     for (let likingUser of requester.likedBy) {
         let message = await updateRequesterLikes(requesterId, likingUser, removeFromArray);
         if(message !== '') return false;
-        console.log('on for loop, before delete');
         await convHandler.deleteConvWithoutLikeUpdate(requesterId, likingUser);
-        console.log('on for loop, after delete');
     }
 
     for (let likedUser of requester.likedUsers) {
         let message = await updateLikesFor(likedUser, requesterId, removeFromArray);
-        console.log('on second loop');
         if(message !== '') return false;
     }
 

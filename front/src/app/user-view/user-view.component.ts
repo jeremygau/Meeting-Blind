@@ -27,8 +27,6 @@ export class UserViewComponent implements OnInit {
         this.httpService.getUser(userId).subscribe(
           (user: User) => {
             this.user = user;
-            console.log('from profile, likedUsers  : ' + user.likedUsers);
-            console.log('from profile, likedBy  : ' + user.likedBy);
           });
       }
       );
