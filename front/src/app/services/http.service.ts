@@ -55,9 +55,7 @@ export class HttpService {
   }
 
   public getConversation(userId: number): Observable<Conversation> {
-    const observable = this.http.get<Conversation>(this.serverUrl + 'conv/' + userId.toString());
-    this.checkForNewMessages();
-    return observable;
+    return this.http.get<Conversation>(this.serverUrl + 'conv/' + userId.toString());
   }
 
   public deleteConversation(userId: number): Observable<any> {
@@ -87,7 +85,7 @@ export class HttpService {
     return this.http.get(this.serverUrl + 'cookieStatus', {responseType: 'json'});
   }
 
-  private checkForNewMessages(): void {
+  public checkForNewMessages(): void {
     this.http.get(this.serverUrl + 'conv/check/newMessages', {responseType: 'text'}).subscribe(
       (response) => {
         const hasNewMessages = response === 'true';

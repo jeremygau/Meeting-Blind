@@ -30,6 +30,7 @@ export class SingleConversationComponent implements OnInit {
       },
       () => {
         if (this.requesterId === undefined) { this.requesterId = this.conversation.user1.id; }
+        this.httpService.checkForNewMessages();
       }
     );
   }
