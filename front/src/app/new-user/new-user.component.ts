@@ -46,9 +46,8 @@ export class NewUserComponent implements OnInit {
       [],
       []
     );
-    // console.log(newUser);
+
     this.httpService.createUser(newUser).subscribe((response: any) => {
-      // console.log(response);
       if (response && response.email === 'ok') {
         alert('L\'utilisateur a été crée');
         this.router.navigate(['profile']);
@@ -58,6 +57,7 @@ export class NewUserComponent implements OnInit {
       }
     }, (e: any) => {
       console.log('erreur', e);
+      alert('Une erreur est survenue. Réessayez. Si l\'erreur persiste, contactez un administateur');
     });
   }
 }

@@ -1,7 +1,7 @@
 import express from "express"
 import usersRouter from "./services/users-routage";
 import searchRouter from "./services/search-router";
-import likeRouter from "./services/like-router";
+import likesRouter from "./services/likes-router";
 import convRouter from "./services/conversations-router";
 import connectionRouter from './services/connection-router';
 const cookieSession = require('cookie-session');
@@ -16,7 +16,7 @@ app.use(express.static('./app/front'));
 
 app.use('/users', usersRouter);
 app.use('/search', searchRouter);
-app.use('/like', likeRouter);
+app.use('/like', likesRouter);
 app.use('/conv', convRouter);
 app.use('/connection', connectionRouter);
 

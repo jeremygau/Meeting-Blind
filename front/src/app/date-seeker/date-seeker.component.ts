@@ -28,6 +28,7 @@ export class DateSeekerComponent implements OnInit {
       },
       (error: any) => {
         console.log(error);
+        alert('une erreur est survenue lors de la recherche. Veuillez rafraichir la page et réessayer');
       }
     );
   }

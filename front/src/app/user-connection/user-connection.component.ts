@@ -31,7 +31,6 @@ export class UserConnectionComponent implements OnInit {
 
     this.authService.connectUser(formValue.email, formValue.password).subscribe(
       (response: any) => {
-        console.log(response.email);
         if (response.email === 'ok') {
           this.authService.setIsConnected(true);
           this.router.navigate(['profile']);

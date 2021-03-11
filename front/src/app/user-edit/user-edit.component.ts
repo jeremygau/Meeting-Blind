@@ -27,7 +27,6 @@ export class UserEditComponent implements OnInit {
     let userId = 1;
     this.httpService.getRequesterId().subscribe(
       (user1) => {
-        console.log('user1', user1);
         userId = user1.id;
       },
       (e) => {
@@ -36,7 +35,6 @@ export class UserEditComponent implements OnInit {
       () => {
         this.httpService.getUser(userId).subscribe(
           (user: User) => {
-            // console.log(user);
             this.user = user;
             this.email = user.email;
             this.password = user.password;

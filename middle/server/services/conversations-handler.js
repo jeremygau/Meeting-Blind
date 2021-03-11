@@ -146,7 +146,7 @@ async function hasNewMessages(req, res) {
  */
 async function deleteConversationGeneric(requesterId, userId) {
     await deleteConvWithoutLikeUpdate(requesterId, userId);
-    await likesHandler.updateLikesFor(userId, requesterId, usersHandler.removeFromArray);
+    await likesHandler.updateLikesFor(userId, requesterId, likesHandler.removeFromArray);
 }
 
 async function deleteConvWithoutLikeUpdate(requesterId, userId) {
