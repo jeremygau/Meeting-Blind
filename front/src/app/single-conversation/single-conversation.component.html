@@ -1,21 +1,24 @@
-<div class="col vh-80 border overflow-auto p-2" id="chat">
-  <div *ngFor="let message of conversation?.messages" class="">
+<div class="mt-5">
+  <h1 class="name-title">{{conversation.user2}}</h1>
+  <div class="col vh-80 border overflow-auto p-2" id="chat">
+    <div *ngFor="let message of conversation?.messages" class="">
 
-    <app-message (deleteMsg)="deleteMessage($event)" [message]="message" [requesterId]="requesterId" [sender]="getSenderName(message)"></app-message>
+      <app-message (deleteMsg)="deleteMessage($event)" [message]="message" [requesterId]="requesterId" [sender]="getSenderName(message)"></app-message>
 
+    </div>
   </div>
-</div>
 
-<div>
-  <p *ngIf="conversation.isBlocked" [ngStyle]="{color: 'red'}"> {{systemMessage}}</p>
-  <div class="publisher bt-1 border-light">
-    <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
-      <input type="text" id="message" placeholder="Ecrivez votre message..." class="form-control" name="message"
-             minlength="1" [(ngModel)]="message" required="" [disabled]="conversation.isBlocked">
-      <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">
-        Envoyer
-      </button>
+  <div>
+    <p *ngIf="conversation.isBlocked" [ngStyle]="{color: 'red'}"> {{systemMessage}}</p>
+    <div class="publisher bt-1 border-light">
+      <form (ngSubmit)="onSubmit(formMessage)" #formMessage="ngForm">
+        <input type="text" id="message" placeholder="Ecrivez votre message..." class="form-control" name="message"
+               minlength="1" [(ngModel)]="message" required="" [disabled]="conversation.isBlocked">
+        <button class="btn btn-primary" type="submit" [disabled]="formMessage.invalid || conversation?.isBlocked">
+          Envoyer
+        </button>
+      </form>
       <button class="btn btn-danger" (click)="deleteConversation()">Supprimer la conversation</button>
-    </form>
+    </div>
   </div>
 </div>

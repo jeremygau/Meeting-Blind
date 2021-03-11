@@ -7,26 +7,3 @@ body {
   min-height: 25vh;
   max-height: 25vh;
 }
-
-
-.first-plan {
-  z-index: 1000;
-}
-
-.start--3 {
-  left: -3%;
-}
-
-.top--3 {
-  top: -3%;
-}
-
-.halfw {
-  width: 40%;
-}
-
-@media (max-width: 991.98px) {
-  .halfw {
-    width: 100%;
-  }
-}

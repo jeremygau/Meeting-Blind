@@ -1,6 +1,6 @@
 <div *ngIf="message.sender !== requesterId" class="mb-2 d-flex" id="{{message.id}}">
   <div class="bg-light-blue rounded p-1 d-flex align-items-center">
-    <a [routerLink]="['/users', message.sender]" class="text-decoration-none">{{sender}} : </a>
+    <a [routerLink]="['/users', message.sender]" class="text-decoration-none pe-1">{{sender}} : </a>
     <div>{{message.content}}</div>
   </div>
 </div>

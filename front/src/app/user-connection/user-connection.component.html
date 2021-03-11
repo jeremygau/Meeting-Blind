@@ -1,15 +1,19 @@
 <div class="position-relative vh-80">
-  <div class="position-absolute top-50 start-50 translate-middle text-center">
+  <div class="position-absolute top-50 start-50 translate-middle text-center rounded-50 shadow-lg p-5">
     <form [formGroup]="connectionForm" (ngSubmit)="onSubmitForm()">
-      <img src="../resources/logo.svg" alt="logo" class="img-fluid" height="100">
-      <h2>Se connecter</h2>
-      <label for="email" class="visually-hidden">Email</label>
-      <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" required="" autofocus="">
-
-      <label for="password" class="visually-hidden">Mot de passe</label>
-      <input type="password" class="form-control" id="password" formControlName="password" required="" placeholder="Mot de passe">
-
-      <button type="submit" class="w-100 btn btn-lg btn-primary" [disabled]="connectionForm.invalid">Se connecter</button>
+      <img src="../resources/logo.svg" alt="logo" class="img-fluid mb-3" height="100">
+      <div class="mb-3 form-floating">
+        <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" required=""
+               autofocus="">
+        <label for="email" class="form-label">Email</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <input type="password" class="form-control" id="password" formControlName="password" required=""
+               placeholder="Mot de passe">
+        <label for="password" class="form-label">Mot de passe</label>
+      </div>
+      <button type="submit" class="w-100 btn btn-lg btn-primary" [disabled]="connectionForm.invalid">Se connecter
+      </button>
     </form>
   </div>
 </div>

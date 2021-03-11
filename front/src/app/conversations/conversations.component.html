@@ -1,9 +1,10 @@
-<h2>Mes conversations</h2>
-<ul class="list-group">
-  <div *ngIf="conversations.length === 0">
-    <p>{{defaultMessage}}</p>
-    <a routerLink="/search">Faire des rencontres</a>
-  </div>
+<div class="mt-5">
+  <h2>Mes conversations</h2>
+  <ul class="list-group">
+    <div *ngIf="conversations.length === 0">
+      <p>{{defaultMessage}}</p>
+      <a class="btn btn-dark-blue" routerLink="/search">Faire des rencontres</a>
+    </div>
     <a *ngFor="let conv of conversations" class="list-group-item list-group-item-action"
        [ngClass]="{'border': hasNewMessages(conv)}"
        [routerLink]="['/conv', conv.user2.id]">
@@ -19,4 +20,5 @@
         </div>
       </div>
     </a>
-</ul>
+  </ul>
+</div>

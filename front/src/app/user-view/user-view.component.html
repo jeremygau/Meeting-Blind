@@ -1,4 +1,10 @@
-<div *ngIf="user !== undefined">
+<div *ngIf="user === undefined" class="position-relative mt-5 vh-80">
+  <div class="spinner-border text-dark-blue position-absolute top-50 start-50 translate-middle" style="width: 10rem; height: 10rem;" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="user !== undefined" class="mt-5">
   <div class="rounded-50 shadow-lg float-lg-start p-3 halfw">
     <div class="row">
       <h1>Profil</h1>

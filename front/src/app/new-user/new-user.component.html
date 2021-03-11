@@ -1,42 +1,44 @@
-<div>
-  <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" formControlName="email">
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Mot de passe</label>
-      <input type="password" class="form-control" id="password" formControlName="password">
-    </div>
-    <div class="mb-3">
-      <label for="firstName" class="form-label">Prénom</label>
-      <input type="text" class="form-control" id="firstName" formControlName="firstName">
-    </div>
-    <div class="mb-3">
-      <label for="city" class="form-label">Ville</label>
-      <input type="text" class="form-control" id="city" formControlName="city">
-    </div>
-    <div class="mb-3">
-      <label for="gender" class="form-label">Genre </label>
-      <select class="form-select" aria-label="gender" id="gender" formControlName="gender">
-        <option value="homme">Homme</option>
-        <option value="femme">Femme</option>
-      </select>
-    </div>
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <textarea class="form-control" id="description" rows="3" formControlName="description"></textarea>
-    </div>
-    <div class="mb-3">
-      <label for="desiredGender" class="form-label">Je recherche </label>
-      <select class="form-select" aria-label="desiredGender" id="desiredGender" formControlName="desiredGender">
-        <option value="homme">des hommes</option>
-        <option value="femme">des femmes</option>
-        <option value="homme/femme">les deux</option>
-      </select>
-    </div>
-    <div>
-      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">S'inscrire</button>
-    </div>
-  </form>
+<div class="position-relative vh-80 mt-5">
+  <div class="position-absolute start-50 top-50 translate-middle rounded-50 p-5 shadow-lg" id="inscription">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
+      <div class="mb-3 form-floating">
+        <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email" required="">
+        <label for="email" class="form-label">Email</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <input type="password" class="form-control" id="password" formControlName="password" placeholder="password" required="">
+        <label for="password" class="form-label">Mot de passe</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Prénom" required="">
+        <label for="firstName" class="form-label">Prénom</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <input type="text" class="form-control" id="city" formControlName="city" placeholder="Ville" required="">
+        <label for="city" class="form-label">Ville</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <select class="form-select" aria-label="gender" id="gender" formControlName="gender" required="">
+          <option value="homme">Homme</option>
+          <option value="femme">Femme</option>
+        </select>
+        <label for="gender" class="form-label">Genre </label>
+      </div>
+      <div class="mb-3 form-floating">
+        <textarea class="form-control" id="description" rows="3" formControlName="description" placeholder="Description"></textarea>
+        <label for="description" class="form-label">Description</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <select class="form-select" aria-label="desiredGender" id="desiredGender" formControlName="desiredGender" required="">
+          <option value="homme">des hommes</option>
+          <option value="femme">des femmes</option>
+          <option value="homme/femme">les deux</option>
+        </select>
+        <label for="desiredGender" class="form-label">Je recherche </label>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">S'inscrire</button>
+      </div>
+    </form>
+  </div>
 </div>

@@ -6,10 +6,6 @@
   height: 80vh;
 }
 
-.w-99 {
-  width: 99% !important;
-}
-
 .end-5 {
   right: 5%;
 }
@@ -44,4 +40,59 @@
 
 .text-dark-blue {
   color: rgba(55, 86, 237, 1);
+}
+
+.btn-dark-blue {
+  color: #fff;
+  background-color: rgba(55, 86, 237, 1);
+  border-color: rgba(55, 86, 237, 1);
+}
+
+.btn-dark-blue:hover {
+  color: #fff;
+  background-color: rgba(115, 55, 237, 1);
+  border-color: rgba(115, 55, 237, 1);
+}
+
+.btn-like {
+  color: #fff;
+  background-color: rgba(162, 177, 234, 1);
+  border-color: rgba(162, 177, 234, 1);
+}
+
+.btn-like:hover {
+  color: #fff;
+  background-color: rgba(183, 162, 234, 1);
+  border-color: rgba(183, 162, 234, 1);
+}
+
+
+.first-plan {
+  z-index: 1000;
+}
+
+.start--3 {
+  left: -3%;
+}
+
+.start--10 {
+  left: -12%;
+}
+
+.top--3 {
+  top: -3%;
+}
+
+.top--10 {
+  top: -12%;
+}
+
+.halfw {
+  width: 40%;
+}
+
+@media (max-width: 991.98px) {
+  .halfw {
+    width: 100%;
+  }
 }
