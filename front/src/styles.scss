@@ -97,3 +97,19 @@
     width: 100%;
   }
 }
+
+.my-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+  padding: 0.25rem;
+  margin: 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}

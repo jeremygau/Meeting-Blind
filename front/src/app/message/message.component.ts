@@ -15,6 +15,7 @@ export class MessageComponent implements OnInit, AfterViewInit{
   @Output() deleteMsg = new EventEmitter<Message>();
 
   container!: HTMLElement | null;
+  dropdownHidden = true;
 
   constructor() { }
 
@@ -30,5 +31,9 @@ export class MessageComponent implements OnInit, AfterViewInit{
 
   deleteMessage(message: Message): void {
     this.deleteMsg.emit(message);
+  }
+
+  showDelete(): void {
+    this.dropdownHidden = !this.dropdownHidden;
   }
 }
