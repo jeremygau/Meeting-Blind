@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+.rounded-50 {
+  border-radius: 50px;
+}
+
+.vh-80 {
+  height: 80vh;
+}
+
+.w-99 {
+  width: 99% !important;
+}
+
+.end-5 {
+  right: 5%;
+}
+
+.bg-grey {
+  background-color: #d3d3d3;
+}
+
+.bg-pink {
+  background-color: rgba(219, 162, 234, 1);
+  }
+
+.bg-dark-blue {
+  background-color: rgba(55, 86, 237, 1);
+}
+
+.bg-light-blue {
+  background-color: rgba(162, 177, 234, 1);
+}
+
+.bg-cyan {
+  background-color: #cfe2ff;
+}
+
+.category {
+  color: rgba(55, 86, 237, 1);
+}
+
+.name-title {
+  color: rgba(162, 177, 234, 1);
+}
+
+.text-dark-blue {
+  color: rgba(55, 86, 237, 1);
+}

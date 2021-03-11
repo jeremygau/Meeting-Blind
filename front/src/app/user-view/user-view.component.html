@@ -4,27 +4,27 @@
       <h1>Profil</h1>
     </div>
     <div class="row">
-      <h2>Mail </h2>
+      <h2 class="category">Mail </h2>
       <p>{{user.email}}</p>
     </div>
     <div class="row">
-      <h2>Nom complet </h2>
+      <h2 class="category">Nom complet </h2>
       <p>{{user.firstName}}</p>
     </div>
     <div class="row">
-      <h2>Ville </h2>
+      <h2 class="category">Ville </h2>
       <p>{{user.city}}</p>
     </div>
     <div class="row">
-      <h2>Genre </h2>
+      <h2 class="category">Genre </h2>
       <p>{{user.gender}}</p>
     </div>
     <div class="row">
-      <h2>Genre recherché </h2>
+      <h2 class="category">Genre recherché </h2>
       <p>{{user.desiredGender}}</p>
     </div>
     <div class="row">
-      <h2>Description </h2>
+      <h2 class="category">Description </h2>
       <p class="text-break">{{user.description}}</p>
     </div>
     <div class="row">
@@ -39,7 +39,7 @@
     <span class="position-absolute top--3 start--3 first-plan">
       <img src="../resources/smiley.svg" alt="Likeurs" width="50" height="50" class="rounded-circle shadow-lg">
     </span>
-      <div class="list-group like overflow-auto mb-5 bg-dark-blue shadow-lg rounded-50">
+      <div class="list-group list-group-flush like overflow-auto mb-5 bg-dark-blue shadow-lg rounded-50">
         <p *ngIf="user.likedBy.length == 0" class="m-3 text-center text-white">Bah alors, personne ne veut de vous ou quoi ?</p>
         <app-like *ngFor="let likedByUser of user.likedBy;" [id]="likedByUser"></app-like>
       </div>
@@ -48,7 +48,7 @@
     <span class="position-absolute top--3 start--3 first-plan">
       <img src="../resources/coeur.svg" alt="Cruch" width="50" height="50" class="rounded-circle shadow-lg">
     </span>
-      <div class="list-group like overflow-auto shadow-lg rounded-50 bg-light-blue">
+      <div class="list-group list-group-flush like overflow-auto shadow-lg rounded-50 bg-light-blue">
         <p *ngIf="user.likedUsers.length == 0" class="m-3 text-center">Vous etes difficile on dirait !</p>
         <app-like *ngFor="let likedUser of user.likedUsers;" [id]="likedUser"></app-like>
       </div>

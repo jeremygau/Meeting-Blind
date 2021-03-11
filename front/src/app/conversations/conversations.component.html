@@ -4,12 +4,19 @@
     <p>{{defaultMessage}}</p>
     <a routerLink="/search">Faire des rencontres</a>
   </div>
-  <li class="list-group-item" *ngFor="let conv of conversations">
-    <h3>{{conv.user2.firstName}}</h3>
-    <p *ngIf="conv.messages.length > 0">Dernier message : {{conv.messages[0].content}}</p>
-    <a [routerLink]="['/conv', conv.user2.id]">Voir la conversation</a>
-  </li>
+    <a *ngFor="let conv of conversations" class="list-group-item list-group-item-action"
+       [ngClass]="{'border': hasNewMessages(conv)}"
+       [routerLink]="['/conv', conv.user2.id]">
+      <div class="row">
+        <div class="col-lg-11 col-9">
+          <h3 class="name-title">{{conv.user2.firstName}}</h3>
+          <div class="d-flex">
+            <p *ngIf="conv.messages.length > 0" class="text-dark-blue me-1 overflow-hidden">{{conv.messages[0].content}}</p>
+          </div>
+        </div>
+        <div class="col-lg-1 col-3 position-relative">
+          <span *ngIf="hasNewMessages(conv)" class="badge bg-dark-blue text-white position-absolute start-50 top-50 translate-middle">New</span>
+        </div>
+      </div>
+    </a>
 </ul>
-
-<!-- TODO gérer la mise en forme différente selon que la conversation ait un message non lu.
-Utiliser la fonction hasUnreadMessages(conversation) pour le boolean-->

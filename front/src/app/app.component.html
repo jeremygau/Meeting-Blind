@@ -12,7 +12,6 @@
         <a routerLink="profile" routerLinkActive="active" class="btn btn-outline-info me-2">Profil</a>
         <a routerLink="conv" routerLinkActive="active" class="btn btn-outline-info me-2 position-relative">Mes Conversations
           <img *ngIf="hasNewMessages" class="position-absolute top-5 start-90 translate-middle badge-heart p-2" src="./resources/heart.svg" alt=""/>
-          <span *ngIf="hasNewMessages" class="position-absolute top-5 start-90 translate-middle badge-heart p-2 text-white small-font">1</span> <!-- TODO: delete cette ligne si on recup pas le nb de new msg   -->
         </a>
       </div>
       <div class="navbar-nav">
