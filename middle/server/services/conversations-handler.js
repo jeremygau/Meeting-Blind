@@ -16,20 +16,27 @@ async function deleteConversation(req, res) {
     try {
         let requesterId = req.session.requesterId;
         let userId = req.params.id;
-        await convRep.deleteConversation(requesterId, userId);
+        await deleteConversationGeneric(requesterId, userId);
         res.status(200).end();
     } catch (error) {
         res.status(400).end();
     }
 }
 
+async function deleteConversationGeneric(requesterId, userId) {
+    await deleteConvWithoutLikeUpdate(requesterId, userId);
+    await usersHandler.updateLikesFor(userId, requesterId, usersHandler.removeFromArray);
+}
+
+async function deleteConvWithoutLikeUpdate(requesterId, userId) {
+    await convRep.deleteConversation(requesterId, userId);
+}
+
 async function setBlockStatusToConversation(requesterId, userId, isBlocked) {
     let conv = await getConversationGeneric(requesterId, userId);
-    if (conv === null) return false;
-    if(conv.isBlocked === isBlocked) { return true; }
+    if (conv === null || conv.isBlocked === isBlocked) { return; }
     conv.isBlocked = isBlocked;
     await updateConversation(conv);
-    return true;
 }
 
 
@@ -102,9 +109,6 @@ async function getAllConversationsGeneric(requesterId) {
 function getLastMessage(conversation) {
     if(conversation.messages.length === 0) return [];
     let message = conversation.messages[conversation.messages.length - 1]
-    if(message.content.length > 50) {
-        message.content = message.content.substring(0, 51) + ' ...';
-    }
     return [message];
 }
 
@@ -231,4 +235,6 @@ export default {
     setBlockStatusToConversation,
     hasNewMessages,
     getConversationGeneric,
+    deleteConversationGeneric,
+    deleteConvWithoutLikeUpdate
 }

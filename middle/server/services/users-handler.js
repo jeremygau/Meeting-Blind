@@ -9,12 +9,7 @@ async function create(req, res) {
         if (userBool) {
             res.send({});
         } else {
-            let newId = 0;
-            let result = await usersRep.getAll();
-            let nbUsers = result.body.hits.total.value;
-            if (nbUsers !== 0) {
-                newId = result.body.hits.hits[nbUsers - 1]._source.id + 1;
-            }
+            const newId = await getIdMax() + 1;
             req.session.requesterId = newId;
             req.body.id = newId;
             await usersRep.store(req.body);
@@ -63,51 +58,36 @@ async function likeEachOther(user1Id, user2Id) {
         return false;
     }
     let user = result.body.hits.hits[0]._source;
+    user2Id = parseInt(user2Id);
     return (user.likedUsers.includes(user2Id) && user.likedBy.includes(user2Id));
 }
 
 
-const addToArray = function addToArray(array, item) {
+function addToArray(array, item) {
     array.push(item);
 }
 
 async function addLike(req, res) {
     res.set('Content-Type', 'application/json');
+
     try {
         let response = {result: ''};
-        let requester = await getUserByIdGeneric(req.session.requesterId);
-        if (requester === null) {
-            response.result = 'requester unknown';
-            res.send(response)
+        const requesterId = req.session.requesterId;
+        const likedUserId = req.body.id;
+        const message = await updateLikesFor(likedUserId, requesterId, addToArray);
+
+        if (message !== '') {
+            response.result = message;
+            res.send(response);
         }
-        let likedUser = await getUserByIdGeneric(req.body.id);
-        if (likedUser === null) {
-            response.result = 'liked user unknown';
-            res.send(response)
-        }
-
-        addToArray(requester.likedUsers, likedUser.id);
-        await updateUserGeneric(requester);
-
-        addToArray(likedUser.likedBy, requester.id);
-        await updateUserGeneric(likedUser);
-
-        if (await likeEachOther(requester.id, likedUser.id)) {
-            let existingConv = await convHandler.getConversationGeneric(likedUser.id, requester.id);
-            if (existingConv !== null) {
-                let convUnblocked = await convHandler.setBlockStatusToConversation(existingConv.user1, existingConv.user2, false);
-                if (! convUnblocked) {
-                    response.result('conversation not unblocked');
-                    res.send(response);
-                }
-            } else {
-                let created = await convHandler.createConversation(likedUser.id, requester.id);
-                if (!created) {
-                    response.result = 'conversation not created';
-                    res.send(response);
-                }
+        if (await likeEachOther(requesterId, likedUserId)) {
+            let message = await createOrUpdateConv(likedUserId, requesterId);
+            if (message !== '') {
+                response.result = message;
+                res.send(response);
             }
         }
+
         response.result = 'ok';
         res.send(response);
     } catch (e) {
@@ -116,37 +96,37 @@ async function addLike(req, res) {
     }
 }
 
-const removeFromArray = function removeFromArray(array, item) {
+async function createOrUpdateConv(userId, requesterId) {
+    let existingConv = await convHandler.getConversationGeneric(userId, requesterId);
+    if (existingConv !== null) {
+        await convHandler.setBlockStatusToConversation(existingConv.user1, existingConv.user2, false);
+    } else {
+        let created = await convHandler.createConversation(userId, requesterId);
+        if (!created) {
+            return 'conversation not created';
+        }
+    }
+    return '';
+}
+
+function removeFromArray(array, item) {
     let index = array.indexOf(item);
     if (index >= 0)
         array.splice(index, 1);
 }
 
 async function removeLike(req, res) {
+    res.set('Content-Type', 'application/json');
     try {
-        res.set('Content-Type', 'application/json');
         let response = {result: ''};
-        let requester = await getUserByIdGeneric(req.session.requesterId);
-        if (requester === null) {
-            response.result = 'requester unknown';
-            res.send(response)
+        const requesterId = req.session.requesterId;
+        const likedUserId = req.params.id;
+        const message = await updateLikesFor(likedUserId, requesterId, removeFromArray);
+        if (message !== '') {
+            response.result = message;
+            res.send(response);
         }
-        let likedUser = await getUserByIdGeneric(req.params.id);
-        if (likedUser === null) {
-            response.result = 'liked user unknown';
-            res.send(response)
-        }
-
-        removeFromArray(requester.likedUsers, likedUser.id);
-        await updateUserGeneric(requester);
-
-        removeFromArray(likedUser.likedBy, requester.id);
-        await updateUserGeneric(likedUser);
-
-        let convBlocked = await convHandler.setBlockStatusToConversation(requester.id, likedUser.id, true);
-        if (!convBlocked) {
-            response.result = 'conversation not blocked';
-        }
+        await convHandler.setBlockStatusToConversation(requesterId, likedUserId, true);
         response.result = 'ok';
         res.send(response);
     } catch (e) {
@@ -156,6 +136,42 @@ async function removeLike(req, res) {
 
 }
 
+async function getIdMax() {
+    const result = await usersRep.getIdMax();
+    if(result.body.hits.total.value === 0) {
+        return -1;
+    }
+    return result.body.aggregations.max_id.value;
+}
+
+async function updateLikesFor(userId, requesterId, actionOnArray) {
+    userId = parseInt(userId);
+    requesterId = parseInt(requesterId);
+    let message = await updateRequesterLikes(userId, requesterId, actionOnArray);
+    if (message !== '') { return message; }
+    message = await updateLikedUserLikes(userId, requesterId, actionOnArray);
+    return message !== '' ? message : '';
+}
+
+async function updateRequesterLikes(likedUserId, requesterId, actionOnArray) {
+    let requester = await getUserByIdGeneric(requesterId);
+    if (requester === null) {
+        return 'requester unknown';
+    }
+    actionOnArray(requester.likedUsers, likedUserId);
+    await updateUserGeneric(requester);
+    return '';
+}
+
+async function updateLikedUserLikes(likedUserId, requesterId, actionOnArray) {
+    let likedUser = await getUserByIdGeneric(likedUserId);
+    if (likedUser === null) {
+        return 'liked user unknown';
+    }
+    actionOnArray(likedUser.likedBy, requesterId);
+    await updateUserGeneric(likedUser);
+    return '';
+}
 
 async function getUsersFromTown(req, res) {
     try {
@@ -186,7 +202,7 @@ async function updateUser(req, res) {
         await updateUserGeneric(req.body);
         res.send({});
     } catch (e) {
-        console.log('error here', e)
+        console.log('error on update User : ', e)
         res.status(400).end();
     }
 }
@@ -199,7 +215,13 @@ async function updateUserGeneric(user) {
 async function deleteUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
-        let result = await usersRep.deleteUserById(req.params.id);
+        console.log('entened in delete');
+        const requesterId = req.session.requesterId;
+        console.log(requesterId);
+        const allDeleted = await removeUserFromAllLikesArray(requesterId);
+        console.log(allDeleted);
+        if (! allDeleted) { res.send({}); }
+        let result = await usersRep.deleteUserById(requesterId);
         if (result.body.deleted === 1) {
             res.send({delete: 'ok'});
         } else {
@@ -208,6 +230,26 @@ async function deleteUser(req, res) {
     } catch (error) {
         res.status(400).end();
     }
+}
+
+async function removeUserFromAllLikesArray(requesterId) {
+    const requester = await getUserByIdGeneric(requesterId);
+    if (requester === null) { return false; }
+    for (let likingUser of requester.likedBy) {
+        let message = await updateRequesterLikes(requesterId, likingUser, removeFromArray);
+        if(message !== '') return false;
+        console.log('on for loop, before delete');
+        await convHandler.deleteConvWithoutLikeUpdate(requesterId, likingUser);
+        console.log('on for loop, after delete');
+    }
+
+    for (let likedUser of requester.likedUsers) {
+        let message = await updateLikesFor(likedUser, requesterId, removeFromArray);
+        console.log('on second loop');
+        if(message !== '') return false;
+    }
+
+    return true;
 }
 
 
@@ -221,7 +263,9 @@ export default {
     removeLike,
     likeEachOther,
     getUserByIdGeneric,
-    getUsersFromTown
+    getUsersFromTown,
+    removeFromArray,
+    updateLikesFor
 };
 
 

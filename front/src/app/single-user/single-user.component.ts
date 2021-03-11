@@ -30,6 +30,7 @@ export class SingleUserComponent implements OnInit {
           (user: User) => {
             this.user = user;
             this.isLikedByRequester = user.likedBy.includes(this.requesterId);
+            console.log('Liked users : ' + user.likedUsers);
             this.likedRequester = user.likedUsers.includes(this.requesterId);
           });
       }
