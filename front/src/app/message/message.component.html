@@ -1,6 +1,6 @@
 <div *ngIf="message.sender !== requesterId" class="mb-2 d-flex" id="{{message.id}}">
   <div class="bg-light-blue rounded p-1 d-flex align-items-center">
-    <a [routerLink]="['/users', message.sender]" class="text-decoration-none pe-1">{{sender}} : </a>
+    <a [routerLink]="['/users', message.sender]" class="text-decoration-none text-white pe-1">{{sender}} : </a>
     <div>{{message.content}}</div>
   </div>
 </div>
@@ -9,7 +9,20 @@
   <div class="bg-dark-blue text-white rounded p-1">
     {{message.content}}
   </div>
-  <button class="btn bg-pink" *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
+  <div class="position-relative">
+    <a id="dropdown-toggle_{{message.id}}" class="btn" (click)="showDelete()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+      </svg>
+    </a>
+    <div id="dropdown-menu_{{message.id}}" class="position-absolute my-dropdown-menu bg-pink" [hidden]="dropdownHidden" (click)="deleteMessage(message)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-trash2"
+           viewBox="0 0 16 16">
+        <path d="M14 3a.702.702 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225A.703.703 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2zM3.215 4.207l1.493 8.957a1 1 0 0 0 .986.836h4.612a1 1 0 0 0 .986-.836l1.493-8.957C11.69 4.689 9.954 5 8 5c-1.954 0-3.69-.311-4.785-.793z"/>
+      </svg>
+    </div>
+  </div>
+  <!--<button class="btn bg-pink" *ngIf="message.sender === requesterId" (click)="deleteMessage(message)">
     <img class="img-fluid mx-auto d-block" src="../resources/trash.svg" alt="delete"/>
-  </button>
+  </button>-->
 </div>
