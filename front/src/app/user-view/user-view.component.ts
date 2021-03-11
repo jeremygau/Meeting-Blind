@@ -18,7 +18,6 @@ export class UserViewComponent implements OnInit {
     let userId = 1;
     this.httpService.getRequesterId().subscribe(
       (user1) => {
-        console.log('user1', user1);
         userId = user1.id;
       },
     (e) => {
@@ -27,10 +26,7 @@ export class UserViewComponent implements OnInit {
       () => {
         this.httpService.getUser(userId).subscribe(
           (user: User) => {
-            // console.log(user);
             this.user = user;
-            // user.likedBy = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]; // TODO: delete ca
-            // user.likedUsers = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3];
           });
       }
       );

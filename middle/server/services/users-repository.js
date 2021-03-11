@@ -129,42 +129,26 @@ const deleteUser = (user) => {
     return deleteUserById(user.id);
 };
 
-const updateUser = (user) => {
-    return esClient.update_by_query({
+const getIdMax = () => {
+    return esClient.search({
         index,
-        refresh: true,
-        body: {
-            "query": {
-                "term": {
-                    "id": user.id
-                }
-            },
-            "script": {
-                "source":
-                    "ctx._source.email = params.email; " +
-                    "ctx._source.password = params.password; " +
-                    "ctx._source.firstName = params.firstName; " +
-                    "ctx._source.city = params.city; " +
-                    "ctx._source.gender = params.gender; " +
-                    "ctx._source.description = params.description; " +
-                    "ctx._source.desiredGender = params.desiredGender",
-                "lang": 'painless',
-                "params": {
-                    "email": user.email,
-                    "password": user.password,
-                    "firstName": user.firstName,
-                    "city": user.city,
-                    "gender": user.gender,
-                    "description": user.description,
-                    "desiredGender": user.desiredGender,
-                }
-            }
-        }
+        body: {"aggs": {"max_id": {"max": {"field": "id"}}}}
     })
         .then(response => response)
         .catch((error) => {
+            console.log(error);
             handleElasticsearchError(error);
-        })
+        });
 }
 
-export default {getUser, store, getAll, getSpecificUsersForCity, getAllUsersForCity, getUserById, deleteUserById, deleteUser};
+export default {
+    getUser,
+    store,
+    getAll,
+    getSpecificUsersForCity,
+    getAllUsersForCity,
+    getUserById,
+    deleteUserById,
+    deleteUser,
+    getIdMax
+};

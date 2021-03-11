@@ -69,7 +69,10 @@ export class UserEditComponent implements OnInit {
     if (confirm('Etes-vous sûr de vouloir supprimer votre compte ?')) {
       this.httpService.deleteUser(this.user.id).subscribe(
         (res) => {
-          if (res.body.delete === 'ok') {
+          if (res.body.delete !== 'ok') {
+            alert('Un problème est survenu lors de la suppression de votre compte. Veuillez réessayer.');
+          }
+          else {
             alert('Compte bien supprimé');
             this.authService.disconnectUser().subscribe(
               (response: any) => {
@@ -78,7 +81,7 @@ export class UserEditComponent implements OnInit {
                   this.router.navigate(['']);
                   return;
                 } else {
-                  alert('Un problème est survenu lors de la tentative de déconnexion, veuillez réessayer.');
+                  alert('Un problème est survenu lors de la tentative de deconnexion, veuillez réessayer.');
                 }
               }
             );
