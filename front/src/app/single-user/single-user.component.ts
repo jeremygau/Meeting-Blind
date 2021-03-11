@@ -79,9 +79,6 @@ export class SingleUserComponent implements OnInit {
       case 'conversation not blocked' :
         alert('Votre conversation n\'a pas été bloquée. Contactez un administrateur');
         break;
-      case 'conversation not unblocked' :
-        alert('Votre conversation n\'a pas été débloquée. Contactez un administrateur');
-        break;
       default:
         alert(this.genericErrorMessage);
     }
