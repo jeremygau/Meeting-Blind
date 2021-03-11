@@ -1,5 +1,5 @@
 import usersRep from './users-repository';
-import convHandler from './conversations-handler';
+import likesHandler from './likes-handler';
 
 
 async function create(req, res) {
@@ -20,16 +20,6 @@ async function create(req, res) {
     }
 }
 
-async function userExist(email) {
-    try {
-        const result = await usersRep.getUser(email);
-        return result.body.hits.total.value > 0;
-    } catch (e) {
-        console.log('error getting user', e);
-        return false;
-    }
-}
-
 async function getUserById(req, res) {
     res.set('Content-Type', 'application/json');
     try {
@@ -44,136 +34,11 @@ async function getUserById(req, res) {
     }
 }
 
-async function getUserByIdGeneric(userId) {
-    const result = await usersRep.getUserById(userId);
-    if (result.body.hits.total.value === 0) {
-        return null;
-    }
-    return result.body.hits.hits[0]._source;
-}
-
-async function likeEachOther(user1Id, user2Id) {
-    let result = await usersRep.getUserById(user1Id);
-    if (result.body.hits.total.value === 0) {
-        return false;
-    }
-    let user = result.body.hits.hits[0]._source;
-    user2Id = parseInt(user2Id);
-    return (user.likedUsers.includes(user2Id) && user.likedBy.includes(user2Id));
-}
-
-
-function addToArray(array, item) {
-    array.push(item);
-}
-
-async function addLike(req, res) {
-    res.set('Content-Type', 'application/json');
-
-    try {
-        let response = {result: ''};
-        const requesterId = req.session.requesterId;
-        const likedUserId = req.body.id;
-        const message = await updateLikesFor(likedUserId, requesterId, addToArray);
-
-        if (message !== '') {
-            response.result = message;
-            res.send(response);
-        }
-        if (await likeEachOther(requesterId, likedUserId)) {
-            let message = await createOrUpdateConv(likedUserId, requesterId);
-            if (message !== '') {
-                response.result = message;
-                res.send(response);
-            }
-        }
-
-        response.result = 'ok';
-        res.send(response);
-    } catch (e) {
-        console.log(e);
-        res.status(400).end();
-    }
-}
-
-async function createOrUpdateConv(userId, requesterId) {
-    let existingConv = await convHandler.getConversationGeneric(userId, requesterId);
-    if (existingConv !== null) {
-        await convHandler.setBlockStatusToConversation(existingConv.user1, existingConv.user2, false);
-    } else {
-        let created = await convHandler.createConversation(userId, requesterId);
-        if (!created) {
-            return 'conversation not created';
-        }
-    }
-    return '';
-}
-
-function removeFromArray(array, item) {
-    let index = array.indexOf(item);
-    if (index >= 0)
-        array.splice(index, 1);
-}
-
-async function removeLike(req, res) {
-    res.set('Content-Type', 'application/json');
-    try {
-        let response = {result: ''};
-        const requesterId = req.session.requesterId;
-        const likedUserId = req.params.id;
-        const message = await updateLikesFor(likedUserId, requesterId, removeFromArray);
-        if (message !== '') {
-            response.result = message;
-            res.send(response);
-        }
-        await convHandler.setBlockStatusToConversation(requesterId, likedUserId, true);
-        response.result = 'ok';
-        res.send(response);
-    } catch (e) {
-        console.log(e);
-        res.status(400).end();
-    }
-
-}
-
-async function getIdMax() {
-    const result = await usersRep.getIdMax();
-    if(result.body.hits.total.value === 0) {
-        return -1;
-    }
-    return result.body.aggregations.max_id.value;
-}
-
-async function updateLikesFor(userId, requesterId, actionOnArray) {
-    userId = parseInt(userId);
-    requesterId = parseInt(requesterId);
-    let message = await updateRequesterLikes(userId, requesterId, actionOnArray);
-    if (message !== '') { return message; }
-    message = await updateLikedUserLikes(userId, requesterId, actionOnArray);
-    return message !== '' ? message : '';
-}
-
-async function updateRequesterLikes(likedUserId, requesterId, actionOnArray) {
-    let requester = await getUserByIdGeneric(requesterId);
-    if (requester === null) {
-        return 'requester unknown';
-    }
-    actionOnArray(requester.likedUsers, likedUserId);
-    await updateUserGeneric(requester);
-    return '';
-}
-
-async function updateLikedUserLikes(likedUserId, requesterId, actionOnArray) {
-    let likedUser = await getUserByIdGeneric(likedUserId);
-    if (likedUser === null) {
-        return 'liked user unknown';
-    }
-    actionOnArray(likedUser.likedBy, requesterId);
-    await updateUserGeneric(likedUser);
-    return '';
-}
-
-async function getUsersFromTown(req, res) {
+/**
+ * Return all the users in the city given in the query, which are of the gender desired by the requester and which
+ * desire the gender of the requester.
+ */
+async function getUsersFromCity(req, res) {
     try {
         let requesterId = req.session.requesterId;
         let requester = await getUserByIdGeneric(requesterId);
@@ -207,16 +72,11 @@ async function updateUser(req, res) {
     }
 }
 
-async function updateUserGeneric(user) {
-    await usersRep.deleteUserById(user.id);
-    await usersRep.store(user);
-}
-
 async function deleteUser(req, res) {
     res.set('Content-Type', 'application/json');
     try {
         const requesterId = req.session.requesterId;
-        const allDeleted = await removeUserFromAllLikesArray(requesterId);
+        const allDeleted = await likesHandler.removeUserFromAllLikesArray(requesterId);
         if (! allDeleted) { res.send({}); }
         let result = await usersRep.deleteUserById(requesterId);
         if (result.body.deleted === 1) {
@@ -229,22 +89,56 @@ async function deleteUser(req, res) {
     }
 }
 
-async function removeUserFromAllLikesArray(requesterId) {
-    const requester = await getUserByIdGeneric(requesterId);
-    if (requester === null) { return false; }
-    for (let likingUser of requester.likedBy) {
-        let message = await updateRequesterLikes(requesterId, likingUser, removeFromArray);
-        if(message !== '') return false;
-        await convHandler.deleteConvWithoutLikeUpdate(requesterId, likingUser);
-    }
 
-    for (let likedUser of requester.likedUsers) {
-        let message = await updateLikesFor(likedUser, requesterId, removeFromArray);
-        if(message !== '') return false;
-    }
+/*********************** UTILITIES ****************************/
 
-    return true;
+
+async function updateUserGeneric(user) {
+    await usersRep.deleteUserById(user.id);
+    await usersRep.store(user);
 }
+
+
+/**
+ * Retrieve the user with the id given in parameter. Returns null if no such user exists.
+ * @param userId the id of the user to find.
+ * @returns {Promise<null|string|string[]>} the user having the id given, or null if no such user exists.
+ */
+async function getUserByIdGeneric(userId) {
+    const result = await usersRep.getUserById(userId);
+    if (result.body.hits.total.value === 0) {
+        return null;
+    }
+    return result.body.hits.hits[0]._source;
+}
+
+/**
+ * get the max id value stores in the database
+ * @returns {Promise<number|*>} the promise of the max value stored in the database.
+ */
+async function getIdMax() {
+    const result = await usersRep.getIdMax();
+    if(result.body.hits.total.value === 0) {
+        return -1;
+    }
+    return result.body.aggregations.max_id.value;
+}
+
+/**
+ * Check if a user having the email in parameter already exists in the database.
+ * @param email the email to check.
+ * @returns {Promise<boolean>} true if a user with this email already exists, false otherwise.
+ */
+async function userExist(email) {
+    try {
+        const result = await usersRep.getUser(email);
+        return result.body.hits.total.value > 0;
+    } catch (e) {
+        console.log('error getting user', e);
+        return false;
+    }
+}
+
 
 
 export default {
@@ -253,13 +147,9 @@ export default {
     updateUser,
     deleteUser,
     getUserById,
-    addLike,
-    removeLike,
-    likeEachOther,
+    updateUserGeneric,
     getUserByIdGeneric,
-    getUsersFromTown,
-    removeFromArray,
-    updateLikesFor
+    getUsersFromCity,
 };
 
 
